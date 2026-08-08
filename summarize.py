@@ -63,7 +63,8 @@ def summarize(article, timeout=120):
         "x-api-key": ANTHROPIC_API_KEY,
         "anthropic-version": ANTHROPIC_VERSION,
         "content-type": "application/json",
-    }r = requests.post(ANTHROPIC_API_URL, headers=headers, json=payload, timeout=timeout)
+    }
+    r = requests.post(ANTHROPIC_API_URL, headers=headers, json=payload, timeout=timeout)
     if r.status_code >= 400:
         # 400 등 오류 시 응답 본문을 그대로 노출해 원인(모델명/필드) 파악
         raise RuntimeError(f"HTTP {r.status_code}: {r.text[:500]}")
