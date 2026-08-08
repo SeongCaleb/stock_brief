@@ -53,7 +53,6 @@ def summarize(article, timeout=120):
     payload = {
         "model": ANTHROPIC_MODEL,
         "max_tokens": 2000,
-        "temperature": 0.3,
         "system": SYSTEM,
         "messages": [
             {"role": "user", "content": user},
