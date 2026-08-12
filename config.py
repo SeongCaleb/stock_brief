@@ -3,29 +3,40 @@ import os
 import urllib.parse
 
 
-def _gnews(query):
-    """구글 뉴스 RSS 검색 URL 생성 (Bloomberg·Reuters·WSJ 등 다매체 헤드라인 집계)."""
+def _gnews(query, lang="en"):
+    """구글 뉴스 RSS 검색 URL 생성 (다매체 헤드라인 집계)."""
     q = urllib.parse.quote(query)
+    if lang == "ko":
+        return f"https://news.google.com/rss/search?q={q}&hl=ko&gl=KR&ceid=KR:ko"
     return f"https://news.google.com/rss/search?q={q}&hl=en-US&gl=US&ceid=US:en"
 
 
-# --- RSS 소스 정의 (미국 증시 전용) ---------------------------------------
+# --- RSS 소스 정의 (미국 + 한국) ------------------------------------------
+# market: "US" | "KR"
 # 직접 피드: 본문 추출이 잘 돼 요약이 풍부함.
-# 구글뉴스 애그리게이터: 매체 폭이 넓고(블룸버그·로이터 포함) 출처명이 그대로 표시됨.
-#   단, 리다이렉트 링크라 본문 추출 실패 시 스니펫 기반으로 요약이 짧아질 수 있음.
+# 구글뉴스 애그리게이터: 매체 폭이 넓고 출처명이 그대로 표시됨(리다이렉트라 본문 추출 실패 시 스니펫 폴백).
 FEEDS = [
-    # 직접 피드 (본문 풍부)
-    {"name": "MarketWatch", "url": "http://feeds.marketwatch.com/marketwatch/topstories/"},
-    {"name": "CNBC Markets", "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15839069"},
-    {"name": "Investing.com", "url": "https://www.investing.com/rss/news_25.rss"},
-    {"name": "Yahoo Finance", "url": "https://finance.yahoo.com/news/rssindex"},
-    # 구글뉴스 애그리게이터 (다매체 헤드라인 — 실제 출처명 표시)
-    {"name": "구글뉴스", "url": _gnews("US stock market")},
-    {"name": "구글뉴스", "url": _gnews("Wall Street stocks earnings")},
+    # 미국 — 직접 피드
+    {"name": "MarketWatch", "market": "US", "url": "http://feeds.marketwatch.com/marketwatch/topstories/"},
+    {"name": "CNBC Markets", "market": "US", "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15839069"},
+    {"name": "Investing.com", "market": "US", "url": "https://www.investing.com/rss/news_25.rss"},
+    {"name": "Yahoo Finance", "market": "US", "url": "https://finance.yahoo.com/news/rssindex"},
+    # 미국 — 구글뉴스 애그리게이터
+    {"name": "구글뉴스", "market": "US", "url": _gnews("US stock market")},
+    {"name": "구글뉴스", "market": "US", "url": _gnews("Wall Street stocks earnings")},
+    # 한국 — 직접 피드
+    {"name": "한국경제", "market": "KR", "url": "https://www.hankyung.com/feed/finance"},
+    {"name": "매일경제 증권", "market": "KR", "url": "https://www.mk.co.kr/rss/30100041/"},
+    {"name": "연합뉴스 경제", "market": "KR", "url": "https://www.yna.co.kr/rss/economy.xml"},
+    # 한국 — 구글뉴스 애그리게이터
+    {"name": "구글뉴스", "market": "KR", "url": _gnews("코스피 증시", lang="ko")},
 ]
 
-# 메일에 담을 최대 기사 수
-MAX_ARTICLES = int(os.getenv("MAX_ARTICLES", "").strip() or "8")
+# 메일에 담을 최대 기사 수 (선별 후 최종)
+MAX_ARTICLES = int(os.getenv("MAX_ARTICLES", "").strip() or "5")
+
+# 선별(triage)에 넣을 후보 기사 최대 수 (많이 모아서 이 중 중요한 것만 고름)
+MAX_CANDIDATES = int(os.getenv("MAX_CANDIDATES", "").strip() or "25")
 
 # 추출 본문이 이 길이 미만이면 RSS 요약으로 폴백
 MIN_BODY_CHARS = 400
