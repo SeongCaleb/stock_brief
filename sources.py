@@ -12,7 +12,7 @@ try:
 except Exception:  # trafilatura 미설치/로드 실패 시에도 파이프라인은 동작
     trafilatura = None
 
-from config import FEEDS, MAX_ARTICLES, MIN_BODY_CHARS, SEEN_PATH
+from config import FEEDS, MAX_CANDIDATES, MIN_BODY_CHARS, SEEN_PATH
 
 
 def _uid(entry):
@@ -86,7 +86,7 @@ def collect(seen):
                 seen_titles.add(nt)
             items.append({
                 "uid": uid,
-                "market": "US",
+                "market": feed.get("market", "US"),
                 "source": outlet,
                 "title": title,
                 "link": entry.get("link", ""),
@@ -95,7 +95,7 @@ def collect(seen):
             })
 
     items.sort(key=lambda x: x["published"] or time.gmtime(0), reverse=True)
-    return items[:MAX_ARTICLES]
+    return items[:MAX_CANDIDATES]
 
 
 def fetch_body(url):
