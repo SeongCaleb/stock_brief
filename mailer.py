@@ -1,4 +1,5 @@
-"""Naver SMTP 발송 + 다이제스트 HTML 조립."""
+"""Naver SMTP 발송 + 컴팩트 다이제스트 HTML 조립 (신호 색상 + 한눈에 보기)."""
+import re
 import smtplib
 from datetime import datetime, timedelta, timezone
 from email.header import Header
@@ -9,63 +10,78 @@ from config import MAIL_TO, NAVER_PASS, NAVER_USER, SMTP_HOST, SMTP_PORT
 
 KST = timezone(timedelta(hours=9))
 
-# 섹션 헤더로 인식할 이모지 (헤드라인 제외). 굵게 렌더링.
-SECTION_EMOJIS = ("⚖️", "📊", "🛢️", "📈", "🎯", "🧭", "💾", "💰", "📉", "🏭", "⚡", "🔋", "🛒")
+# 신호별 색상
+SIGNAL_COLOR = {"강세": "#059669", "약세": "#dc2626", "주의": "#d97706", "중립": "#6b7280"}
+SIGNAL_EMOJI = {"강세": "📈", "약세": "📉", "주의": "⚠️", "중립": "➡️"}
+_SIG_PREFIX = ("📈", "📉", "⚠️", "➡️")
 
 
-def block_html(source, market, link, digest_text):
-    """LLM이 만든 텍스트 블록을 카드형 HTML로 변환."""
+def glance_html(picks):
+    """상단 '한눈에 보기': 국기 + 신호 배지 + 한글 헤드라인 한 줄씩."""
+    rows = []
+    for a in picks:
+        sig = a.get("signal", "중립")
+        color = SIGNAL_COLOR.get(sig, "#6b7280")
+        emoji = SIGNAL_EMOJI.get(sig, "➡️")
+        flag = "🇰🇷" if a.get("market") == "KR" else "🇺🇸"
+        title = a.get("ko_title") or a.get("title", "")
+        rows.append(
+            "<div style='margin:5px 0;font-size:13px;line-height:1.5;'>"
+            f"<span style='margin-right:4px;'>{flag}</span>"
+            f"<span style='display:inline-block;min-width:52px;color:{color};font-weight:700;'>{emoji} {escape(sig)}</span>"
+            f"<span style='color:#374151;'>{escape(title)}</span></div>"
+        )
+    inner = "\n".join(rows)
+    return (
+        "<div style='border:1px solid #e5e7eb;border-radius:12px;padding:14px 16px;margin:14px 0;background:#fff;'>"
+        "<div style='font-size:13px;font-weight:700;color:#111827;margin-bottom:8px;'>🔑 오늘 꼭 볼 뉴스</div>"
+        f"{inner}</div>"
+    )
+
+
+def block_html(source, market, link, brief_text):
+    """3줄 브리핑을 컴팩트 카드로. 첫 줄(신호·헤드라인) 강조, 🎯 메타는 muted."""
+    flag = "🇰🇷" if market == "KR" else "🇺🇸"
     out = []
-    seen_headline = False
-    for raw in digest_text.splitlines():
+    for raw in brief_text.splitlines():
         line = raw.strip()
         if not line:
-            out.append("<div style='height:8px;'></div>")
             continue
-        if line.startswith("출처"):          # 출처는 카드 상단에 이미 표시
-            continue
-        if not seen_headline:                  # 첫 줄 = 헤드라인
+        if line.startswith(_SIG_PREFIX):  # 신호 + 헤드라인
+            sig = next((s for s in SIGNAL_COLOR if s in line[:6]), "중립")
+            color = SIGNAL_COLOR.get(sig, "#111827")
             out.append(
-                f"<div style='font-size:16px;font-weight:700;color:#111827;margin:2px 0 8px;line-height:1.5;'>{escape(line)}</div>"
+                f"<div style='font-size:15px;font-weight:700;color:{color};margin:0 0 6px;line-height:1.5;'>{escape(line)}</div>"
             )
-            seen_headline = True
-            continue
-        if line.startswith("- "):              # 불릿: 긴 문장도 깔끔히 접히도록 hanging indent
+        elif line.startswith("🎯"):  # 메타(섹터/종목/포인트)
             out.append(
-                "<div style='margin:4px 0;padding-left:16px;text-indent:-16px;"
-                f"color:#374151;line-height:1.6;'>•&nbsp;{escape(line[2:])}</div>"
+                f"<div style='font-size:12px;color:#6b7280;margin:6px 0 0;line-height:1.55;'>{escape(line)}</div>"
             )
-        elif any(line.startswith(e) for e in SECTION_EMOJIS):  # 섹션 헤더
+        else:  # 요약 문장
             out.append(
-                f"<div style='margin:14px 0 4px;font-weight:600;color:#111827;line-height:1.55;'>{escape(line)}</div>"
+                f"<div style='font-size:13px;color:#374151;margin:0;line-height:1.6;'>{escape(line)}</div>"
             )
-        else:                                  # 리드/본문 문장
-            out.append(
-                f"<div style='margin:6px 0;color:#111827;line-height:1.7;'>{escape(line)}</div>"
-            )
-    inner = "\n".join(out)
-    tag = "🇺🇸 미국"
     src = (
-        f"<a href='{escape(link)}' style='color:#6b7280;text-decoration:none;'>{escape(source)} ↗</a>"
-        if link else escape(source)
+        f"<a href='{escape(link)}' style='color:#9ca3af;text-decoration:none;font-size:11px;'>{flag} {escape(source)} ↗</a>"
+        if link else f"<span style='color:#9ca3af;font-size:11px;'>{flag} {escape(source)}</span>"
     )
-    return f"""
-    <div style="border:1px solid #e5e7eb;border-radius:12px;padding:18px 20px;margin:14px 0;background:#fff;">
-      <div style="font-size:12px;color:#9ca3af;margin-bottom:10px;">{tag} · {src}</div>
-      <div style="font-size:15px;">{inner}</div>
-    </div>
-    """
+    return (
+        "<div style='border:1px solid #e5e7eb;border-radius:12px;padding:14px 16px;margin:10px 0;background:#fff;'>"
+        f"{''.join(out)}"
+        f"<div style='margin-top:8px;'>{src}</div></div>"
+    )
 
 
-def build_email(blocks):
+def build_email(glance, blocks):
     date_str = datetime.now(KST).strftime("%Y-%m-%d")
     body = "\n".join(blocks)
     html = f"""
-    <div style="max-width:680px;margin:0 auto;padding:8px;font-family:-apple-system,'Apple SD Gothic Neo',system-ui,sans-serif;background:#f9fafb;">
-      <h2 style="font-size:20px;color:#111827;margin:4px 0;">📈 오늘의 증시 브리핑 · {date_str}</h2>
-      <div style="font-size:12px;color:#9ca3af;margin-bottom:6px;">Axios Smart Brevity 스타일 · 미국 증시</div>
+    <div style="max-width:640px;margin:0 auto;padding:8px;font-family:-apple-system,'Apple SD Gothic Neo',system-ui,sans-serif;background:#f9fafb;">
+      <h2 style="font-size:19px;color:#111827;margin:4px 0;">📈 오늘의 증시 브리핑 · {date_str}</h2>
+      <div style="font-size:12px;color:#9ca3af;margin-bottom:4px;">미국 증시 · 꼭 알아야 할 뉴스만</div>
+      {glance}
       {body}
-      <div style="font-size:11px;color:#9ca3af;margin:18px 4px;">본 요약과 '관심 포인트'는 기사에서 도출된 참고 정보이며, 특정 종목의 매수·매도 추천이나 투자 자문이 아닙니다.</div>
+      <div style="font-size:11px;color:#9ca3af;margin:16px 4px;">신호(강세/약세/주의/중립)는 기사가 시사하는 방향을 나타낼 뿐, 특정 종목의 매수·매도 추천이나 투자 자문이 아닙니다.</div>
     </div>
     """
     return date_str, html
