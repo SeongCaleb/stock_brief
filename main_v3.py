@@ -122,7 +122,7 @@ def make_email():
     community["statuses"]["세이브티커"] = save_report["status"]
     # Undated website listing is discovery-only, not asserted as today's news.
     for item in save_report["listing"][:3]:
-        community["items"].insert(0, {"source": "세이브티커 SAVE PICK",
+        community["items"].insert(0, {"source": "세이브티커 공개 뉴스 목록",
             "title": item["title"], "url": item["link"],
             "basis": "공개 뉴스 목록 링크; 발행 시각·내용 미검증"})
     print("[info] 공개 커뮤니티/영상 새 제목:", len(community["items"]), community["statuses"])
