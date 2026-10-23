@@ -173,6 +173,7 @@ def research_snapshot(path="market_snapshot.json", now=None):
         candidates.append({
             "ticker": str(ticker).upper()[:16],
             "name": str(asset.get("name") or ticker)[:70],
+            "sector": str(asset.get("sector") or "기타"),
             "score": round(score, 2),
             "status": label,
             "evidence": evidence,
@@ -184,7 +185,7 @@ def research_snapshot(path="market_snapshot.json", now=None):
             "invalidation": str(thesis["invalidation"])[:300],
             "sources": refs[:3],
         })
-    return regime, sorted(candidates, key=lambda x: -x["score"])[:3]
+    return regime, sorted(candidates, key=lambda x: -x["score"])[:12]
 
 
 def research_html(regime, candidates, has_news):

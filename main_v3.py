@@ -19,6 +19,9 @@ from sources import collect, enrich, load_seen, save_seen
 from summarize import headline_of, summarize, triage
 from v3_research import dated_articles, research_html, research_snapshot
 from v3_market_data import collect_snapshot
+from v4_discovery import (discovery_universe, unique_events, load_tracking,
+                          tracking_changes, next_tracking, diversify_candidates, TRACKING_PATH)
+from v4_email import make_digest
 
 STATE_PATH = Path("v3_delivery_state.json")
 REPORT_DIR = Path("reports")
@@ -91,15 +94,17 @@ def asset_comparison_html(snapshot):
 
 
 def make_email():
+    """Collect articles and broad rotating universe, create a concise v4 digest."""
     _prepare_sources()
     _update_prompts()
     seen = load_seen()
+    old = load_tracking()
     fetched = collect(seen)
-    articles = dated_articles(fetched)
+    articles = unique_events(dated_articles(fetched))
     print(f"[info] 신규 RSS {len(fetched)}건, 유효 기사 {len(articles)}건")
-    selected = triage(articles) if articles else []
+    selected = unique_events(triage(articles) if articles else [])
     selected = enrich(selected)
-    cards, picks, sent_uids = [], [], []
+    picks, sent_uids = [], []
     for article in selected:
         try:
             brief = summarize(article)
@@ -110,29 +115,35 @@ def make_email():
             print("[warn] 3줄 형식이 아닌 기사 제외")
             continue
         article["ko_title"] = headline_of(brief) or article["title"]
-        cards.append(block_html(
-            article["source"], article.get("market", "US"),
-            article.get("link", ""), brief
-        ))
+        article["brief"] = brief
         picks.append(article)
         sent_uids.append(article["uid"])
-    snapshot_path = REPORT_DIR / "market_snapshot.json"
+
     REPORT_DIR.mkdir(exist_ok=True)
+    snapshot_path = REPORT_DIR / "market_snapshot.json"
+    watched = list((old.get("latest") or {}).keys())
+    universe = discovery_universe(
+        articles, previous=watched, extra=os.getenv("STOCK_WATCHLIST"),
+        limit=int(os.getenv("DISCOVERY_LIMIT", "18"))
+    )
+    print(f"[info] 섹터 순환·뉴스 기반 신규 조사 종목 {len(universe)}개")
     try:
-        snapshot = collect_snapshot()
-        snapshot_path.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2), encoding="utf-8")
+        snapshot = collect_snapshot(watchlist=universe)
         print(f"[info] 시장 데이터: 거시 {len(snapshot['macro'])}개, ETF {len(snapshot['asset_classes'])}개, 후보 {len(snapshot['assets'])}개")
     except Exception as exc:
         print(f"[warn] 시장 데이터 수집 실패: {type(exc).__name__}")
-        snapshot = {"asset_classes": [], "collection_warnings": ["시장 데이터 수집 실패"]}
+        snapshot = {
+            "macro": {}, "assets": {}, "asset_classes": [], "watchlist": [],
+            "collection_warnings": [f"시장 데이터 수집 실패: {type(exc).__name__}"],
+        }
+    # Always replace, even on provider failure; never use stale prior snapshot.
+    snapshot_path.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2), encoding="utf-8")
     regime, candidates = research_snapshot(str(snapshot_path))
-    supplement = research_html(regime, candidates, bool(cards))
-    supplement += asset_comparison_html(snapshot)
-    date_str, html = build_email(glance_html(picks) if picks else "", cards)
-    # Place research inside the existing mail container.
-    prefix, marker, suffix = html.rpartition("</div>")
-    html = (prefix + supplement + marker + suffix) if marker else html + supplement
-    return date_str, html, seen, sent_uids, len(cards), len(candidates)
+    candidates = diversify_candidates(candidates, count=3)
+    changes = tracking_changes(snapshot, old)
+    date_str, html = make_digest(picks, snapshot, regime, candidates, changes)
+    ledger = next_tracking(snapshot, old)
+    return date_str, html, seen, sent_uids, len(picks), len(candidates), ledger
 
 
 def main():
@@ -159,7 +170,7 @@ def main():
         if missing:
             raise RuntimeError("필수 Secret이 설정되지 않았습니다: " + ", ".join(missing))
 
-    date_str, html, seen, sent_uids, news_count, picks_count = make_email()
+    date_str, html, seen, sent_uids, news_count, picks_count, ledger = make_email()
     REPORT_DIR.mkdir(exist_ok=True)
     (REPORT_DIR / "latest.html").write_text(html, encoding="utf-8")
     print(f"[info] 보고서 생성: 뉴스 {news_count}건, 조건부 추천 후보 {picks_count}건")
@@ -168,10 +179,14 @@ def main():
         return
 
     # SMTP succeeds BEFORE either dedup cache is persisted.
-    send(f"📈 Stock Brief v3 · {date_str} | 뉴스 {news_count}건", html)
+    send(f"📊 Stock Brief v4 · {date_str} | 추천 {picks_count} · 핵심 뉴스 {news_count}", html)
     print(f"[info] 이메일 발송 성공 → {MAIL_TO}")
     seen.update(sent_uids)
     save_seen(seen)
+    track_path = Path(TRACKING_PATH)
+    track_temp = track_path.with_suffix(".tmp")
+    track_temp.write_text(json.dumps(ledger, ensure_ascii=False, indent=2), encoding="utf-8")
+    track_temp.replace(track_path)
     state["sent_dates"] = list(dict.fromkeys([*state["sent_dates"], today]))[-45:]
     _save_state(state)
 
