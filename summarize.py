@@ -71,9 +71,9 @@ def triage(candidates):
     raw = _call(system, user, max_tokens=1200)
     picks = _parse_json_array(raw)
 
-    if not picks:  # 파싱 실패 시 안전 폴백: 최신 N건, 신호는 중립
-        print("[warn] triage JSON 파싱 실패 → 최신 기사로 폴백")
-        return [{**a, "signal": "중립"} for a in candidates[:MAX_ARTICLES]]
+    if not picks:
+        print("[warn] triage JSON 파싱 실패 → 핵심 시장 이벤트 우선 휴리스틱으로 폴백")
+        return _fallback_select(candidates)
 
     selected = []
     for p in picks[:MAX_ARTICLES]:
@@ -87,22 +87,66 @@ def triage(candidates):
             art["signal"] = sig if sig in SIGNAL_EMOJI else "중립"
             art["signal_reason"] = str(p.get("reason", "")).strip()
             selected.append(art)
-    return selected or [{**a, "signal": "중립"} for a in candidates[:MAX_ARTICLES]]
+    return selected or _fallback_select(candidates)
+
+
+# A fallback is *not* just "newest first": that can accidentally prioritize
+# savings advice, marketing, or insignificant company updates.
+MAJOR_EVENTS = (
+    ("연준", 6), ("fomc", 7), ("federal reserve", 6), ("금리 결정", 6),
+    ("central bank", 4), ("국채", 4), ("treasury yield", 4),
+    ("채권", 2), ("신용 스프레드", 7), ("credit spread", 7),
+    ("디폴트", 7), ("default risk", 7), ("파산", 7), ("bankruptcy", 7),
+    ("물가", 4), ("inflation", 4), ("고용", 3), ("jobs report", 4),
+    ("실적 전망", 5), ("earnings guidance", 5), ("revenue forecast", 4),
+    ("실적", 2), ("earnings", 2), ("ai 투자", 3), ("tariff", 4),
+    ("관세", 4), ("유가", 4), ("oil prices", 4), ("환율", 3), ("달러", 2),
+    ("geopolitic", 3), ("무역", 3), ("코스피", 3), ("nasdaq", 3),
+    ("s&p 500", 3), ("시장 급락", 4), ("selloff", 4),
+    ("반도체", 2), ("semiconductor", 2), ("금융 규제", 3),
+)
+FILLER_TERMS = (
+    "should i", "how much do i", "credit card rewards", "retirement savings",
+    "best stocks to buy now", "millionaire", "what to do with", "analyst says buy",
+    "posts earnings", "reports earnings", "earnings update",
+    "은퇴자금", "예금 추천", "광고", "단독 추천", "클릭하세요",
+)
+
+
+def _fallback_select(candidates):
+    ranked = []
+    for index, article in enumerate(candidates):
+        title = str(article.get("title") or "").lower()
+        detail = str(article.get("summary") or "").lower()[:250]
+        if any(w in title for w in FILLER_TERMS):
+            continue
+        score = sum(weight for term, weight in MAJOR_EVENTS if term in title)
+        # Secondary context matters, but a long generic snippet cannot dominate.
+        score += sum(min(2, weight // 3) for term, weight in MAJOR_EVENTS
+                     if term in detail and term not in title)
+        if article.get("source", "").startswith("세이브티커"):
+            score += 1  # editorial preference, never an automatic "important" pass
+        if score >= 2:
+            ranked.append((score, -index, article))
+    ranked.sort(key=lambda x: (-x[0], -x[1]))
+    return [
+        {**article, "signal": "주의", "signal_reason": "AI 선별 실패: 주요 시장 사건 키워드 기반 임시 분류"}
+        for _, _, article in ranked[:MAX_ARTICLES]
+    ]
 
 
 def _parse_json_array(text):
-    """코드펜스/잡텍스트가 섞여도 첫 JSON 배열을 뽑아 파싱."""
-    t = text.strip().removeprefix("```json").removeprefix("```").removesuffix("```").strip()
-    try:
-        return json.loads(t)
-    except Exception:
-        pass
-    m = re.search(r"\[.*\]", t, re.DOTALL)
-    if m:
+    """Find a complete array with JSONDecoder instead of a greedy regex."""
+    if not isinstance(text, str):
+        return []
+    decoder = json.JSONDecoder()
+    for m in re.finditer(r"\[", text):
         try:
-            return json.loads(m.group(0))
-        except Exception:
-            return []
+            obj, _ = decoder.raw_decode(text[m.start():])
+            if isinstance(obj, list):
+                return obj
+        except (ValueError, TypeError):
+            continue
     return []
 
 
