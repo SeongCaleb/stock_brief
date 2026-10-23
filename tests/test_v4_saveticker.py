@@ -34,6 +34,14 @@ class SaveTickerTests(unittest.TestCase):
         self.assertEqual(len(rows), 1)
         self.assertEqual(rows[0]["source"], "세이브티커 (검색 피드)")
 
+    def test_explicit_rumor_is_not_promoted_to_news(self):
+        xml = """<?xml version='1.0'?><rss version='2.0'><channel>
+        <item><title>(카더라) 기업 인수합병 루머 - 세이브티커</title>
+        <link>https://news.google.com/rss/articles/rumor</link>
+        <source url="https://saveticker.com">세이브티커</source>
+        <pubDate>Fri, 23 Oct 2026 12:00:00 GMT</pubDate></item></channel></rss>"""
+        self.assertEqual(parse_indexed_feed(xml, datetime(2026, 10, 24, tzinfo=timezone.utc)), [])
+
     def test_access_failure_does_not_generate_fake_news(self):
         session = Mock()
         session.get.side_effect = TimeoutError("network denied")
