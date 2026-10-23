@@ -76,9 +76,9 @@ def discovery_universe(articles, on_day=None, previous=None, extra=None, limit=1
             pool.append(symbol)
     for i, tickers in enumerate(SECTORS.values()):
         add(tickers[(offset + i) % len(tickers)])
-    for symbol in identify_news_tickers(articles):
+    for symbol in (previous or [])[:3]:
         add(symbol)
-    for symbol in (previous or [])[:4]:
+    for symbol in identify_news_tickers(articles)[:4]:
         add(symbol)
     if isinstance(extra, str):
         extra = extra.split(",")
