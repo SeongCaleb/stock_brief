@@ -97,6 +97,27 @@ def _macro_context(snapshot):
                          f"({e(str(datum.get('as_of') or '')[:10])})")
     return "<div style='margin-top:8px;font-size:11px'>" + " · ".join(texts) + "</div>" if texts else ""
 
+def _candidate_commentary(c):
+    deep = c.get("deep_dive")
+    if not isinstance(deep, dict):
+        return (f"<div style='font-size:12px;margin-top:4px'>기회: {e(c.get('bull_case'))}</div>"
+                f"<div style='font-size:12px;margin-top:4px'>반론: {e(c.get('bear_case'))}</div>"
+                f"<div style='font-size:12px;margin-top:4px'>관찰 조건: {e(c.get('entry_condition'))}</div>")
+    names = (
+        ("why", "투자 가설"),
+        ("catalyst", "3~6개월 촉매"),
+        ("bear", "반대 시나리오"),
+        ("entry", "진입 검토"),
+        ("exit", "가설 무효화"),
+        ("alternative", "대안 비교"),
+    )
+    html = "<div style='font-size:11px;color:#6b7280;margin:6px 0'>AI가 관측 자료를 바탕으로 작성한 가설이며 사실 확인이 완료된 예측이 아닙니다.</div>"
+    for key, title in names:
+        if deep.get(key):
+            html += f"<div style='font-size:12px;margin-top:5px'><b>{e(title)}:</b> {e(deep[key])}</div>"
+    return html
+
+
 def _candidate(c):
     tags = " · ".join(c.get("risk_tags") or [])
     status = c.get("status", "조사 후보")
@@ -108,9 +129,7 @@ def _candidate(c):
             f"<span style='font-size:11px;font-weight:600;color:{color}'>{e(status)}</span></div>"
             f"<div style='font-size:11px;color:#6b7280;margin:4px 0'>근거 {e(c.get('evidence'))} · 가격 기준 {e(c.get('quote_date'))} · {source_link}</div>"
             + _candidate_metrics(c)
-            + f"<div style='font-size:12px;margin-top:4px'>기회: {e(c.get('bull_case'))}</div>"
-            f"<div style='font-size:12px;margin-top:4px'>반론: {e(c.get('bear_case'))}</div>"
-            f"<div style='font-size:12px;margin-top:4px'>관찰 조건: {e(c.get('entry_condition'))}</div>"
+            + _candidate_commentary(c)
             + (f"<div style='font-size:12px;color:#b45309;margin-top:4px'>⚠️ {e(tags)}</div>" if tags else "")
             + "</div>")
 
