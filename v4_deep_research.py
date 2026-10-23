@@ -23,7 +23,7 @@ SYSTEM = """당신은 기업별 투자 가설을 검토하는 한국어 투자 �
 - entry: 어떤 숫자/조건을 확인한 뒤 진입을 검토할지.
 - exit: 가설이 틀렸다고 판단할 조건.
 - alternative: 다른 자산 또는 지수 ETF와 비교할 이유.
-모든 필드는 한국어 짧은 문장 하나(150자 이내). 비밀 데이터, 무조건 사라/팔아라,
+모든 필드는 한국어 짧은 문장 하나(70자 이내). 비밀 데이터, 무조건 사라/팔아라,
 막연한 가격예측은 금지.
 
 반드시 다음 JSON 배열만 출력:
@@ -61,27 +61,56 @@ def research_candidates(candidates, articles, community, caller):
             for a in (community or [])[:4]
         ],
     }
-    try:
-        raw = caller(SYSTEM, json.dumps(context, ensure_ascii=False), max_tokens=2200)
-        match = re.search(r"\[[\s\S]*\]", raw)
-        parsed = json.loads(match.group(0) if match else raw)
-        if not isinstance(parsed, list):
-            raise ValueError("analysis must be a list")
-        table = {}
-        for item in parsed:
+    allowed = {c["ticker"] for c in candidates[:3]}
+
+    def parse_answer(raw):
+        if not isinstance(raw, str):
+            raise ValueError("non-text model response")
+        decoder = json.JSONDecoder()
+        # Accept a JSON array after a small amount of explanatory text,
+        # without greedy matching across multiple bracketed spans.
+        for match in re.finditer(r"\[", raw):
+            try:
+                answer, _ = decoder.raw_decode(raw[match.start():])
+                if isinstance(answer, list):
+                    return answer
+            except (ValueError, TypeError):
+                continue
+        raise ValueError("Model JSON array missing or incomplete")
+
+    def add_valid(items, table):
+        for item in items:
             if not isinstance(item, dict):
                 continue
             ticker = str(item.get("ticker", "")).upper()
-            if ticker not in {c["ticker"] for c in candidates[:3]}:
+            if ticker not in allowed:
                 continue
-            fields = {k: str(item.get(k) or "").strip().replace("\n", " ")[:180]
+            fields = {k: str(item.get(k) or "").strip().replace("\n", " ")[:150]
                       for k in FIELDS}
             if all(fields.values()):
                 table[ticker] = fields
-        for candidate in candidates:
-            if candidate["ticker"] in table:
-                candidate["deep_dive"] = table[candidate["ticker"]]
-        return candidates
+
+    table = {}
+    try:
+        raw = caller(SYSTEM, json.dumps(context, ensure_ascii=False), max_tokens=5500)
+        add_valid(parse_answer(raw), table)
     except Exception as exc:
-        print("[warn] 심층 투자 가설 분석 제외:", type(exc).__name__)
-        return candidates
+        print("[warn] 심층 투자 분석 일괄 응답 재시도:", type(exc).__name__)
+    # Avoid losing ALL in-depth analysis because one long batch was truncated.
+    # At most three short, individual attempts; preserve quantified fallback.
+    for item in batch:
+        if item["ticker"] in table:
+            continue
+        one = {"candidates": [item], "mainstream_headlines": context["mainstream_headlines"][:2],
+               "user_favorites_unverified_titles": context["user_favorites_unverified_titles"][:1]}
+        try:
+            raw = caller(SYSTEM, json.dumps(one, ensure_ascii=False), max_tokens=2300)
+            add_valid(parse_answer(raw), table)
+        except Exception as exc:
+            print("[warn] 종목별 심층 투자 분석 제외:", item["ticker"], type(exc).__name__)
+
+    for candidate in candidates:
+        if candidate["ticker"] in table:
+            candidate["deep_dive"] = table[candidate["ticker"]]
+    print(f"[info] 기업별 심층 투자 분석 적용: {len(table)}/{len(batch)}개")
+    return candidates
