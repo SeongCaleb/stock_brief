@@ -59,6 +59,24 @@ class DeepResearchTests(unittest.TestCase):
         self.assertEqual(result[0]["ticker"], "ABC")
         self.assertNotIn("deep_dive", result[0])
 
+    def test_partial_batch_json_retries_individual_candidates(self):
+        candidates = [{
+            "ticker": "ABC", "name": "ABC",
+            "quote_date": "2026-10-23", "market_info": {}, "detail": {},
+            "valuation_info": {}, "risk_tags": []
+        }]
+        calls = []
+        def caller(system, context, max_tokens):
+            calls.append(max_tokens)
+            if len(calls) == 1:
+                return '[{"ticker":"ABC","why":"불완전한'
+            return ('[{"ticker":"ABC","why":"수익성 개선 가능","catalyst":"다음 분기 실적",'
+                    '"bear":"성장 둔화 위험","entry":"이익률 확인",'
+                    '"exit":"실적 하향","alternative":"VOO 비교"}]')
+        out = research_candidates(candidates, [], [], caller)
+        self.assertEqual(len(calls), 2)
+        self.assertEqual(out[0]["deep_dive"]["entry"], "이익률 확인")
+
     def test_batch_memo_renders_as_six_distinct_fields(self):
         candidate = {"ticker": "ABC", "name": "Example", "status": "조사 후보",
                      "score": 10, "evidence": "제한적", "quote_date": "2026-10-23",
