@@ -22,6 +22,7 @@ GOOGLE_RSS = ("https://news.google.com/rss/search"
               "&hl=ko&gl=KR&ceid=KR:ko")
 HEADERS = {"User-Agent": "StockBriefResearch/1.0 (public editorial headlines)"}
 DETAIL_PATTERN = re.compile(r"^/news/(?:news_[A-Za-z0-9_-]+|[0-9]+)$")
+RUMOR_OR_REMOVED = re.compile(r"카더라|미확인 루머|찌라시|원문 삭제|기사 삭제|출처 불명|확인되지 않은 소문", re.I)
 
 
 class NewsLinks(HTMLParser):
@@ -76,7 +77,7 @@ def parse_indexed_feed(xml, now=None):
             if "세이브티커" not in source_title and "saveticker" not in source_title.lower():
                 continue
         ts = a.get("published_parsed")
-        if not ts or len(title) < 12:
+        if not ts or len(title) < 12 or RUMOR_OR_REMOVED.search(title):
             continue
         age = (now.timestamp() - calendar.timegm(ts)) / 3600
         if age < -2 or age > 72:
@@ -95,7 +96,7 @@ def parse_indexed_feed(xml, now=None):
             "uid": "saveticker-indexed:" + (str(a.get("id") or link))[:250],
             "basis": "세이브티커 게시물의 검색 색인 제목·발행 시각 (원문 검증 별도)",
         })
-    return result[:15]
+    return result[:25]
 
 
 def collect_saveticker(session=None, now=None):
