@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import json
 import re
-import time
 from datetime import datetime, timedelta, timezone
 from html import escape
 from pathlib import Path
@@ -127,6 +126,8 @@ def research_snapshot(path="market_snapshot.json", now=None):
             continue
         # Do not label an expensive stock an unconditional buy.
         overvalued = pe > 0 and peer > 0 and pe / peer >= 1.5 and growth < 20
+        if pe <= 0 or peer <= 0 or growth < -100:
+            continue
         if overvalued:
             continue
         score = (growth - max(0.0, (pe / peer - 1.0) * 20)) if peer > 0 else growth
