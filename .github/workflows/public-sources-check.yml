@@ -1,0 +1,34 @@
+name: Stock Brief Public Sources Check
+on:
+  push:
+    paths:
+      - ".github/community-source-check.txt"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install feedparser requests
+      - name: Check favorite source listings (no login)
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from v4_community import collect_public_signals
+          report = collect_public_signals(previous={})
+          output = {"statuses": report["statuses"], "items": report["items"]}
+          Path("community-source-status.json").write_text(json.dumps(output, ensure_ascii=False, indent=2), encoding="utf-8")
+          print(json.dumps({"statuses": report["statuses"], "titles": [i["title"] for i in report["items"]]}, ensure_ascii=False))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: public-source-status-${{ github.run_id }}
+          path: community-source-status.json
+          retention-days: 3
