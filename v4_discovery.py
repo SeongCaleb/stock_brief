@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import json
 import re
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timezone, timedelta
 from pathlib import Path
 
 SECTORS = {
@@ -135,7 +135,7 @@ def tracking_changes(snapshot, old):
 
 
 def next_tracking(snapshot, old, run_date=None):
-    run_date = run_date or datetime.now(timezone.utc).date().isoformat()
+    run_date = run_date or datetime.now(timezone(timedelta(hours=9))).date().isoformat()
     latest = {}
     for ticker, item in (snapshot.get("assets") or {}).items():
         latest[ticker] = {
