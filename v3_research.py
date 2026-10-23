@@ -123,39 +123,66 @@ def research_snapshot(path="market_snapshot.json", now=None):
         price = asset.get("market") or {}
         financials = asset.get("financials") or {}
         thesis = asset.get("thesis") or {}
-        refs = thesis.get("source_urls") or []
-        hosts = {
-            urlsplit(u).hostname
-            for u in refs if isinstance(u, str) and u.startswith("https://")
-        }
-        hosts.discard(None)
-        if not (_fresh(price, 7, now) and _fresh(financials, 120, now)
-                and len(hosts) >= 2 and all(thesis.get(k) for k in REQUIRED_THESIS)):
+        if not (_fresh(price, 7, now) and _fresh(financials, 30, now)):
             continue
         if financials.get("going_concern_warning") is True:
             continue
+        if not all(thesis.get(k) for k in REQUIRED_THESIS):
+            continue
+        refs = [u for u in (thesis.get("source_urls") or [])
+                if isinstance(u, str) and u.startswith("https://")
+                and urlsplit(u).hostname]
+        if not refs:
+            continue
         try:
-            pe = float(financials.get("forward_pe"))
-            peer = float(financials.get("peer_forward_pe_median"))
-            growth = float(financials.get("expected_earnings_growth_pct"))
-        except (TypeError, ValueError):
+            market_price = float(price["price"])
+        except (ValueError, TypeError, KeyError):
             continue
-        # Do not label an expensive stock an unconditional buy.
-        overvalued = pe > 0 and peer > 0 and pe / peer >= 1.5 and growth < 20
-        if pe <= 0 or peer <= 0 or growth < -100:
+        if not 0 < market_price < 1e8:
             continue
-        if overvalued:
+        def optional_numeric(field):
+            try:
+                value = float(financials[field])
+                return value if -1e5 < value < 1e5 else None
+            except (ValueError, TypeError, KeyError):
+                return None
+        pe = optional_numeric("forward_pe")
+        peer = optional_numeric("peer_forward_pe_median")
+        growth = optional_numeric("expected_earnings_growth_pct")
+        pe = pe if pe is not None and pe > 0 else None
+        peer = peer if peer is not None and peer > 0 else None
+        growth = growth if growth is not None and -80 <= growth <= 200 else None
+        # A single verified, dated vendor dataset can surface a RESEARCH idea.
+        # It cannot produce an unconditional buy or a high-confidence claim.
+        if pe is None and growth is None:
             continue
-        score = (growth - max(0.0, (pe / peer - 1.0) * 20)) if peer > 0 else growth
+        tags = [str(t)[:90] for t in asset.get("risk_tags", []) if isinstance(t, str)]
+        if pe and peer and pe / peer >= 1.5 and (growth is None or growth < 20):
+            if "동종 기업 대비 고평가 주의" not in tags:
+                tags.append("동종 기업 대비 고평가 주의")
+        evidence = "보통" if pe is not None and peer is not None and growth is not None else "제한적"
+        label = "매수 조건 검토" if evidence == "보통" else "조사 후보"
+        if tags:
+            label = "가격·과열 주의"
+        # Explicit heuristic priority, never a forecast or target price.
+        score = (growth * 0.5 if growth is not None else -10)
+        score -= (pe * 0.2 if pe is not None else 10)
+        if pe is not None and peer is not None:
+            score += max(-12, min(8, (peer - pe) * 0.5))
+        score -= 12 * len(tags)
         candidates.append({
             "ticker": str(ticker).upper()[:16],
             "name": str(asset.get("name") or ticker)[:70],
-            "score": score,
-            "bull_case": str(thesis["bull_case"])[:240],
-            "bear_case": str(thesis["bear_case"])[:240],
-            "entry_condition": str(thesis["entry_condition"])[:240],
-            "invalidation": str(thesis["invalidation"])[:240],
-            "sources": [str(u) for u in refs[:3]],
+            "score": round(score, 2),
+            "status": label,
+            "evidence": evidence,
+            "risk_tags": tags,
+            "quote_date": str(price.get("as_of", ""))[:10],
+            "bull_case": str(thesis["bull_case"])[:300],
+            "bear_case": str(thesis["bear_case"])[:300],
+            "entry_condition": str(thesis["entry_condition"])[:300],
+            "invalidation": str(thesis["invalidation"])[:300],
+            "sources": refs[:3],
         })
     return regime, sorted(candidates, key=lambda x: -x["score"])[:3]
 
@@ -169,15 +196,19 @@ def research_html(regime, candidates, has_news):
         "개별 종목의 재무위험·고평가·단기 과열은 서로 다릅니다. "
         "유효한 공식/시세 자료 없이는 안전하다고 판정하지 않습니다.</div>",
         "</div>",
-        "<h3 style='font-size:15px'>🎯 최종 매수 검토 후보 (조건부)</h3>",
+        "<h3 style='font-size:15px'>🎯 관심·매수 검토 후보 (조건부)</h3>",
+        "<p style='font-size:12px;color:#6b7280'>추천 탐색은 빠르게 진행하지만, 확신도는 자료 수준에 따라 구분합니다. 모두 3~6개월 이상 관찰 대상이며 확정 매수 신호는 아닙니다.</p>",
     ]
     if not candidates:
-        parts.append("<p>이번에는 추천 보류 — 검증된 최신 시세·재무·독립된 근거가 충분하지 않습니다.</p>")
+        parts.append("<p>이번에는 추천 보류 — 신선한 시세 및 최소 한 가지 가치·성장 지표가 없어 조사할 후보를 선정하지 못했습니다.</p>")
     for i, item in enumerate(candidates, 1):
         parts.append(
             "<div style='margin:12px 0;padding:12px;border:1px solid #e5e7eb;background:#fff'>"
             f"<b>{i}. {escape(item['name'])} ({escape(item['ticker'])})</b>"
-            f"<p>성장 가설: {escape(item['bull_case'])}</p>"
+            f"<p><b>{escape(item['status'])}</b> · 근거 수준: {escape(item['evidence'])}"
+            f" · 가격 기준일: {escape(item['quote_date'])}</p>"
+            + (f"<p style='color:#b45309'>⚠️ {escape(', '.join(item['risk_tags']))}</p>" if item["risk_tags"] else "")
+            + f"<p>성장 가설: {escape(item['bull_case'])}</p>"
             f"<p>반론: {escape(item['bear_case'])}</p>"
             f"<p>진입 검토 조건: {escape(item['entry_condition'])}</p>"
             f"<p>가설 무효화: {escape(item['invalidation'])}</p>"
@@ -191,5 +222,5 @@ def research_html(regime, candidates, has_news):
         parts.append("<p>오늘 선별된 새로운 중요 기사가 없습니다. 기사 수집 불가 가능성도 점검해야 합니다.</p>")
     parts.append("<div style='color:#6b7280;font-size:11px;margin-top:12px'>"
                  "현재 보유 종목 없음(사용자 제공 정보). 투자 여부와 주문은 사용자가 결정합니다. "
-                 "자료 미확보 시 시장 판단과 추천은 보류합니다.</div>")
+                 "벤더 추정치는 확정 실적이 아니며, 자료 미확보 시 판단은 보류합니다.</div>")
     return "\n".join(parts)

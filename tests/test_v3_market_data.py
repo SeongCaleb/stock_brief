@@ -1,6 +1,6 @@
 import unittest
 from datetime import datetime, timezone
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 from v3_market_data import collect_snapshot, _get_csv_latest
 
 class MarketDataTests(unittest.TestCase):
@@ -21,6 +21,25 @@ class MarketDataTests(unittest.TestCase):
         self.assertEqual(item["assets"], {})
         self.assertEqual(item["asset_classes"], [])
         self.assertGreater(len(item["collection_warnings"]), 1)
+    def test_stock_candidate_without_sec_header(self):
+        session = Mock()
+        session.get.side_effect = TimeoutError("FRED is temporarily unavailable")
+        quote = {"as_of": "2026-10-23T00:00:00+00:00",
+                 "source_url": "https://finance.yahoo.com/quote/V/",
+                 "price": 100.0,
+                 "return_3m_pct": 4.0,
+                 "ma200_gap_pct": 2.0}
+        date = datetime(2026, 10, 23, 16, tzinfo=timezone.utc)
+        with patch.dict("os.environ", {"SEC_USER_AGENT": ""}), \
+                patch("v3_market_data._history", side_effect=lambda yf, symbol, now: (symbol, dict(quote))), \
+                patch("v3_market_data._safe_info", return_value={"forwardPE": 19, "shortName": "Test"}), \
+                patch("v3_market_data._future_growth", return_value=14):
+            snapshot = collect_snapshot(now=date, session=session, finance=Mock(), watchlist=["V"])
+        self.assertIn("V", snapshot["assets"])
+        self.assertEqual(snapshot["assets"]["V"]["financials"]["kind"], "vendor_estimates")
+        self.assertIsNone(snapshot["assets"]["V"]["sec_filing"])
+        self.assertEqual(snapshot["assets"]["V"]["candidate_status"], "매수 조건 검토")
+
     def test_invalid_tickers_filtered(self):
         session = Mock()
         session.get.side_effect = TimeoutError("offline")
