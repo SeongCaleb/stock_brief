@@ -7,6 +7,7 @@ on:
       - 'v3_market_data.py'
       - 'v4_discovery.py'
       - 'v4_email.py'
+      - 'v4_community.py'
       - 'tests/**'
       - '.github/workflows/**'
   workflow_dispatch:
@@ -22,4 +23,4 @@ jobs:
           python-version: '3.11'
       - run: python -m pip install -r requirements.txt
       - run: python -m unittest discover -s tests -v
-      - run: python -m py_compile main_v3.py v3_research.py v3_market_data.py v4_discovery.py v4_email.py
+      - run: python -m py_compile main_v3.py v3_research.py v3_market_data.py v4_discovery.py v4_email.py v4_community.py

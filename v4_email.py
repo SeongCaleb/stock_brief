@@ -34,6 +34,69 @@ def _html_item(a):
             f"<div style='font-size:11px;color:#9ca3af;margin-top:6px'>{anchor} · {e(date)} KST</div></div>")
 
 
+
+
+def _candidate_metrics(c):
+    detail = c.get("detail") or {}
+    market = c.get("market_info") or {}
+    valuation = c.get("valuation_info") or {}
+    specs = [
+        ("3개월", market.get("return_3m_pct"), "%"),
+        ("52주 최고 대비", market.get("below_52w_high_pct"), "%"),
+        ("매출 성장 YoY", detail.get("revenue_growth_yoy_pct"), "%"),
+        ("영업이익률", detail.get("operating_margin_pct"), "%"),
+        ("FCF 수익률", detail.get("fcf_yield_pct"), "%"),
+        ("선행 PER", valuation.get("forward_pe"), "배"),
+        ("EPS 성장 추정", valuation.get("expected_earnings_growth_pct"), "%"),
+        ("순차입금", detail.get("net_debt_bil_usd"), "십억 USD"),
+    ]
+    bits = [
+        f"<span style='display:inline-block;padding:3px 7px;margin:2px;background:#f3f4f6;border-radius:4px'>"
+        f"{e(label)} <b>{float(value):.1f}{e(unit)}</b></span>"
+        for label, value, unit in specs if isinstance(value, (int, float))
+    ]
+    return "<div style='font-size:11px;margin:8px 0'>" + "".join(bits) + "</div>" if bits else ""
+
+
+def _community_html(community):
+    data = community or {}
+    parts = [
+        "<h3 style='margin:20px 0 8px;font-size:16px'>💬 즐겨보는 곳의 새로운 주제</h3>",
+        "<p style='font-size:11px;color:#6b7280'>공개 게시물·영상 제목 기준. 전체 본문·영상 자막 분석이 아니며 확인된 사실로 취급하지 않습니다.</p>",
+    ]
+    for item in (data.get("items") or [])[:7]:
+        url = str(item.get("url") or "")
+        if not url.startswith("https://"):
+            continue
+        parts.append(
+            f"<div style='border-bottom:1px solid #e5e7eb;padding:7px 0;font-size:12px'>"
+            f"<b>{e(item.get('source'))}</b> · <a href='{e(url)}'>{e(item.get('title'))}</a>"
+            f"<div style='font-size:11px;color:#6b7280'>{e(item.get('basis'))}</div></div>"
+        )
+    if not data.get("items"):
+        parts.append("<p style='font-size:12px'>새로 확인한 공개 제목이 없거나 접근이 제한됐습니다.</p>")
+    statuses = " · ".join(e(name) + ": " + e(note)
+                          for name, note in (data.get("statuses") or {}).items())
+    parts.append(f"<div style='font-size:11px;color:#6b7280;margin-top:8px'>{statuses}</div>")
+    return "".join(parts)
+
+
+def _macro_context(snapshot):
+    indicators = [
+        ("VIX", "vix", ""),
+        ("하이일드 스프레드", "high_yield_spread_pct", "%p"),
+        ("미국 2년", "us_2y_yield_pct", "%"),
+        ("미국 10년", "us_10y_yield_pct", "%"),
+    ]
+    texts = []
+    for label, key, suffix in indicators:
+        datum = (snapshot.get("macro") or {}).get(key) or {}
+        value = datum.get("value")
+        if isinstance(value, (float, int)):
+            texts.append(f"{e(label)} <b>{float(value):.2f}{e(suffix)}</b> "
+                         f"({e(str(datum.get('as_of') or '')[:10])})")
+    return "<div style='margin-top:8px;font-size:11px'>" + " · ".join(texts) + "</div>" if texts else ""
+
 def _candidate(c):
     tags = " · ".join(c.get("risk_tags") or [])
     status = c.get("status", "조사 후보")
@@ -44,7 +107,8 @@ def _candidate(c):
             f"<div style='font-size:14px;font-weight:700'>{e(c.get('name'))} · {e(c.get('ticker'))} "
             f"<span style='font-size:11px;font-weight:600;color:{color}'>{e(status)}</span></div>"
             f"<div style='font-size:11px;color:#6b7280;margin:4px 0'>근거 {e(c.get('evidence'))} · 가격 기준 {e(c.get('quote_date'))} · {source_link}</div>"
-            f"<div style='font-size:12px;margin-top:4px'>기회: {e(c.get('bull_case'))}</div>"
+            + _candidate_metrics(c)
+            + f"<div style='font-size:12px;margin-top:4px'>기회: {e(c.get('bull_case'))}</div>"
             f"<div style='font-size:12px;margin-top:4px'>반론: {e(c.get('bear_case'))}</div>"
             f"<div style='font-size:12px;margin-top:4px'>관찰 조건: {e(c.get('entry_condition'))}</div>"
             + (f"<div style='font-size:12px;color:#b45309;margin-top:4px'>⚠️ {e(tags)}</div>" if tags else "")
@@ -75,7 +139,7 @@ def _asset_table(snapshot):
             "<p style='color:#6b7280;font-size:11px'>USD 기준 ETF 가격수익률. 총수익·환율·밸류에이션·수익률 전망과 다르며, 수익률 순위는 매수 순위가 아닙니다.</p>")
 
 
-def make_digest(articles, snapshot, regime, candidates, changes=None, generated_at=None):
+def make_digest(articles, snapshot, regime, candidates, changes=None, generated_at=None, community=None):
     dt = (generated_at or datetime.now(KST)).astimezone(KST)
     day = dt.strftime("%Y-%m-%d")
     evidence = len(snapshot.get("assets") or {})
@@ -91,7 +155,8 @@ def make_digest(articles, snapshot, regime, candidates, changes=None, generated_
              f"{e(day)} · 3~6개월 이상 · 주식·ETF·채권·금 · 신호는 조사 우선순위</div>"
              f"<div style='padding:13px;background:#eff6ff;border-radius:10px;font-size:12px;line-height:1.6'>"
              f"<b>{status}</b><div>{e(market_note)}</div>"
-             f"<div style='color:#64748b'>분석 기업 {scanned}개 · 후보 근거 확보 {evidence}개 · 데이터 수집 경고 {warning_count}건</div></div>")
+             f"<div style='color:#64748b'>분석 기업 {scanned}개 · 후보 근거 확보 {evidence}개 · 데이터 수집 경고 {warning_count}건</div>"
+             + _macro_context(snapshot) + "</div>")
     picks = "<h3 style='margin:20px 0 8px;font-size:16px'>🎯 이번에 볼 투자 후보</h3>"
     if candidates:
         picks += "".join(_candidate(c) for c in candidates[:3])
@@ -103,6 +168,7 @@ def make_digest(articles, snapshot, regime, candidates, changes=None, generated_
     else:
         events += "<p style='font-size:12px'>신규 중요 뉴스 없음 또는 데이터 수집 제한</p>"
     assets = "<h3 style='margin:20px 0 8px;font-size:16px'>🌐 지수·채권·금 비교</h3>" + _asset_table(snapshot)
+    community_section = _community_html(community)
     shifts = ""
     if changes:
         shifts = "<h3 style='margin:18px 0 8px;font-size:15px'>🔄 이전 분석과 달라진 점</h3>"
@@ -118,4 +184,4 @@ def make_digest(articles, snapshot, regime, candidates, changes=None, generated_
            "아카라이브·위폴·유튜브의 로그인 전용 콘텐츠는 자동 수집되지 않습니다. "
            "현재 보유 종목은 없는 것으로 전달받았으며 모든 매매는 직접 결정합니다."
            "</div></div>")
-    return day, start + picks + events + assets + shifts + risk + end
+    return day, start + picks + events + assets + community_section + shifts + risk + end
