@@ -108,6 +108,7 @@ MAJOR_EVENTS = (
 FILLER_TERMS = (
     "should i", "how much do i", "credit card rewards", "retirement savings",
     "best stocks to buy now", "millionaire", "what to do with", "analyst says buy",
+    "posts earnings", "reports earnings", "earnings update",
     "은퇴자금", "예금 추천", "광고", "단독 추천", "클릭하세요",
 )
 
