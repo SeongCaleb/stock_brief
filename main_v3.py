@@ -110,6 +110,10 @@ def make_email():
         community = {"items": [], "statuses": {"소스 수집": "실패: " + type(exc).__name__},
                      "next_seen": community_old}
     print("[info] 공개 커뮤니티/영상 새 제목:", len(community["items"]), community["statuses"])
+    REPORT_DIR.mkdir(exist_ok=True)
+    (REPORT_DIR / "community_sources.json").write_text(
+        json.dumps({"items": community["items"], "statuses": community["statuses"]},
+                   ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"[info] 신규 RSS {len(fetched)}건, 유효 기사 {len(articles)}건")
     selected = unique_events(triage(articles) if articles else [])
     selected = enrich(selected)
