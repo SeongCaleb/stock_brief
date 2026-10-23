@@ -1,44 +1,71 @@
-name: Stock Brief Daily
-
+name: Stock Brief v3 Daily Email
 on:
   schedule:
-    - cron: "0 22 * * *"   # 07:00 KST (UTC 22:00)
-  workflow_dispatch:        # 수동 실행 버튼
+    - cron: "30 23 * * *" # 08:30 Asia/Seoul, may be delayed by GitHub
+  workflow_dispatch:
+    inputs:
+      send_email:
+        description: "Send an actual email? (default preview only)"
+        type: boolean
+        required: true
+        default: false
 
 permissions:
-  contents: write            # seen.json 커밋 백을 위해 필요
+  contents: write
+
+concurrency:
+  group: stock-brief-daily
+  cancel-in-progress: false
 
 jobs:
   brief:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-
-      - name: Install deps
+      - name: Install dependencies
         run: pip install -r requirements.txt
-
-      - name: Run digest
+      - name: Run Stock Brief v3
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           NAVER_USER: ${{ secrets.NAVER_USER }}
           NAVER_PASS: ${{ secrets.NAVER_PASS }}
           MAIL_TO: ${{ secrets.MAIL_TO }}
-          ANTHROPIC_MODEL: ${{ vars.ANTHROPIC_MODEL }}  # 미설정 시 claude-sonnet-5
-          MAX_ARTICLES: ${{ vars.MAX_ARTICLES }}    # 미설정 시 5
-        run: python main.py
-
-      - name: Persist seen.json
+          ANTHROPIC_MODEL: ${{ vars.ANTHROPIC_MODEL }}
+          MAX_ARTICLES: ${{ vars.MAX_ARTICLES }}
+          EVENT_NAME: ${{ github.event_name }}
+          MANUAL_SEND: ${{ inputs.send_email }}
+        shell: bash
         run: |
-          if [[ -n "$(git status --porcelain seen.json)" ]]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add seen.json
-            git commit -m "chore: update seen.json [skip ci]"
-            git push
+          set -euo pipefail
+          if [[ "$EVENT_NAME" == "schedule" || "$MANUAL_SEND" == "true" ]]; then
+            python main_v3.py --send
           else
-            echo "seen.json 변경 없음"
+            python main_v3.py --preview
+          fi
+      - name: Save preview artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: stock-brief-${{ github.run_id }}
+          path: reports/latest.html
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Persist delivered state
+        if: success() && (github.event_name == 'schedule' || inputs.send_email == true)
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add seen.json v3_delivery_state.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: record delivered v3 brief [skip ci]"
+            git pull --rebase origin main
+            git push origin HEAD:main
           fi
