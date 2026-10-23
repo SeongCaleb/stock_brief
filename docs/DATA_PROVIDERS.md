@@ -11,7 +11,7 @@
 - `SEC_USER_AGENT`: 예: `StockBrief Research contact@example.org` (실제 연락 가능한 주소 사용).
 - `STOCK_WATCHLIST`: 콤마로 구분한 티커 목록, 최대 12개. 기본: `BRK-B,JNJ,V,MSFT,GOOGL,XOM`. 업종 제한 없이 변경 가능하나 **전 세계 자동 스크리닝이 아님**.
 
-현재 `.github/workflows/daily.yml`에는 다음 환경 변수 두 개를 전달하도록 추가해야 합니다. `SEC_USER_AGENT`가 없으면 **종목 확정 추천은 보류**합니다.
+`.github/workflows/daily.yml`에서 아래 변수를 전달합니다. **SEC_USER_AGENT가 없어도 한 곳의 최신 가격 자료와 선행 PER 또는 EPS 성장 추정이 있으면 조사 후보가 표시됩니다.** 공시 확인은 추가 신뢰도 확보용 선택 사항입니다.
 
 ```yaml
 SEC_USER_AGENT: ${{ vars.SEC_USER_AGENT }}
@@ -24,8 +24,9 @@ STOCK_WATCHLIST: ${{ vars.STOCK_WATCHLIST }}
 3. ETF 비교는 달러 기준 가격 변화이며 원화 수익률·환헤지·배당금·세금·거래 비용 포함 아님
 4. 고평가 측정은 단순한 동종기업 비교와 EPS 추정 참고치로 **완전한 기업 가치평가가 아님**
 5. VIX·신용스프레드·SPY 200일선은 스트레스 신호일 뿐 시장 폭·닷컴버블 확정 진단 아님
-6. 독립된 뉴스/공시 근거와 정성 검증, 가설 성과 추적, 리밸런싱 계획은 추가 개발 필요
-7. 실제 투자 주문이나 인버스 자동매매 없음
+6. **후보 제시 기준 완화**: 최신 가격과 최소 하나의 가치·성장 추정 지표로 조사 후보 생성. 선행 PER·EPS 성장·비교기업 지표 모두 있으면 “매수 조건 검토” 표시. 공시는 선택 사항. 값이 없거나 과거 기준이면 보류. 여러 지표가 없는 후보는 근거 수준 “제한적”을 반드시 표시
+7. *매수 조건 검토*는 자동 매수 지시나 적정가치 확정이 아니며, 추천 등급별 과거 성과 검증도 아직 하지 않았습니다.
+8. 실제 투자 주문이나 인버스 자동매매 없음
 
 ## 실행 확인
 Actions > Stock Brief v3 Daily Email > Run workflow > send_email=false 후 `reports/latest.html` 아티팩트를 검토합니다. 실시간 공급원에서 요청을 거절할 수 있으므로 수집 경고를 우선 확인하세요.
