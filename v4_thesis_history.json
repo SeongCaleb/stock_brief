@@ -1,1 +1,82 @@
-{"latest": {}, "last_sent_date": null}
+{
+  "latest": {
+    "ORCL": {
+      "date": "2026-10-23",
+      "price": 127.2984,
+      "forward_pe": 11.583249,
+      "growth_estimate_pct": 35.0,
+      "source": "https://finance.yahoo.com/quote/ORCL"
+    },
+    "TMUS": {
+      "date": "2026-10-23",
+      "price": 150.78,
+      "forward_pe": 10.453222,
+      "growth_estimate_pct": 27.2,
+      "source": "https://finance.yahoo.com/quote/TMUS"
+    },
+    "BKNG": {
+      "date": "2026-10-23",
+      "price": 157.05,
+      "forward_pe": 12.694808,
+      "growth_estimate_pct": 18.33,
+      "source": "https://finance.yahoo.com/quote/BKNG"
+    },
+    "COST": {
+      "date": "2026-10-23",
+      "price": 1008.33,
+      "forward_pe": 40.290783,
+      "growth_estimate_pct": 9.94,
+      "source": "https://finance.yahoo.com/quote/COST"
+    },
+    "UNH": {
+      "date": "2026-10-23",
+      "price": 424.75,
+      "forward_pe": 18.24953,
+      "growth_estimate_pct": 13.04,
+      "source": "https://finance.yahoo.com/quote/UNH"
+    },
+    "BRK-B": {
+      "date": "2026-10-23",
+      "price": 545.405,
+      "forward_pe": 24.314268,
+      "growth_estimate_pct": -0.17,
+      "source": "https://finance.yahoo.com/quote/BRK-B"
+    },
+    "DE": {
+      "date": "2026-10-23",
+      "price": 643.1925,
+      "forward_pe": 28.237185,
+      "growth_estimate_pct": 26.94,
+      "source": "https://finance.yahoo.com/quote/DE"
+    },
+    "EOG": {
+      "date": "2026-10-23",
+      "price": 164.565,
+      "forward_pe": 10.154009,
+      "growth_estimate_pct": -9.87,
+      "source": "https://finance.yahoo.com/quote/EOG"
+    },
+    "LIN": {
+      "date": "2026-10-23",
+      "price": 510.49,
+      "forward_pe": 26.078804,
+      "growth_estimate_pct": 11.12,
+      "source": "https://finance.yahoo.com/quote/LIN"
+    },
+    "DUK": {
+      "date": "2026-10-23",
+      "price": 124.635,
+      "forward_pe": 17.38413,
+      "growth_estimate_pct": 6.78,
+      "source": "https://finance.yahoo.com/quote/DUK"
+    },
+    "EQIX": {
+      "date": "2026-10-23",
+      "price": 948.195,
+      "forward_pe": 51.177708,
+      "growth_estimate_pct": 4.63,
+      "source": "https://finance.yahoo.com/quote/EQIX"
+    }
+  },
+  "last_sent_date": "2026-10-23"
+}
