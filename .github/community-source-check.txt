@@ -1,2 +1,4 @@
 One-time safe check of public favorite sources, no email or secrets.
 Wepoll parser diagnosis retry.
+
+SaveTicker read-only availability check 2026-10-24.
