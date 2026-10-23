@@ -26,6 +26,16 @@ jobs:
           output = {"statuses": report["statuses"], "items": report["items"]}
           Path("community-source-status.json").write_text(json.dumps(output, ensure_ascii=False, indent=2), encoding="utf-8")
           print(json.dumps({"statuses": report["statuses"], "titles": [i["title"] for i in report["items"]]}, ensure_ascii=False))
+          import requests
+          from v4_community import WEPOLL, AnchorParser
+          for name, url in WEPOLL.items():
+              response = requests.get(url, timeout=12)
+              parser = AnchorParser()
+              parser.feed(response.text)
+              print("DIAGNOSTIC", name, response.status_code, response.url, len(response.text),
+                    "has_wr_id", "wr_id" in response.text,
+                    "anchor_samples", parser.anchors[:12],
+                    "html_sample", response.text[:450].replace("\\n", " "))
           PY
       - uses: actions/upload-artifact@v4
         with:
