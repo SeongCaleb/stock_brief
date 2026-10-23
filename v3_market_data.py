@@ -258,36 +258,81 @@ def collect_snapshot(now=None, session=None, finance=None, watchlist=None):
             except Exception:
                 continue
         asset["peer_forward_pe_median"] = round(median(peer_pes), 2) if len(peer_pes) >= 2 else None
-        if (not filing or pe is None or pe <= 0 or estimates is None
-                or asset["peer_forward_pe_median"] is None):
-            asset["warning"] = "조건부 추천 자료 부족: SEC 공시·선행 PER·익년도 EPS 성장추정·피어 비교"
+        # SEC filing is supplementary. A delayed Yahoo quote and indicative
+        # forward P/E OR EPS growth estimate are enough to surface an idea.
+        # They are not enough for an unconditional buy recommendation.
+        if pe is not None and pe <= 0:
+            pe = None
+        if estimates is not None and not (-80 <= estimates <= 200):
+            estimates = None
+        if pe is None and estimates is None:
+            asset["warning"] = "판단 근거 부족: 선행 PER·EPS 성장추정 모두 없음"
             continue
-        if not (-50 <= estimates <= 150):
-            asset["warning"] = "성장률 추정이 비정상적이어서 보류"
-            continue
-        # An explicit falsifiable research hypothesis; NOT a price forecast.
         peer = asset["peer_forward_pe_median"]
-        ticker = asset["ticker"]
+        source_urls = list(asset["sources"])
+        price = asset["market"]["price"]
+        positives = [f"최근 확인 가격 {price:.2f} USD"]
+        negatives = ["분석 기간 3~6개월 이상에도 시장 변동·환율 위험 존재"]
+        if estimates is not None:
+            positives.append(f"다음 회계연도 EPS 성장 추정 {estimates:.1f}% (확정 실적 아님)")
+            if estimates < 0:
+                negatives.append("이익 감소 예상")
+        else:
+            negatives.append("EPS 성장 추정치 없음")
+        if pe is not None:
+            positives.append(f"선행 PER {pe:.1f}배 (업체 제공 추정)")
+            if peer is not None and peer > 0:
+                negatives.append(f"비교기업 선행 PER 중앙값 {peer:.1f}배")
+            else:
+                negatives.append("동종기업과의 신뢰할 만한 가격 비교 부족")
+        else:
+            negatives.append("선행 PER 확인 불가")
+        risk_tags = []
+        if pe and peer and peer > 0 and pe / peer >= 1.5 and (estimates is None or estimates < 20):
+            risk_tags.append("동종 기업 대비 고평가 주의")
+        gap = asset["market"].get("ma200_gap_pct")
+        r3 = asset["market"].get("return_3m_pct")
+        if gap is not None and r3 is not None and gap >= 20 and r3 >= 30:
+            risk_tags.append("단기 과열 가능성")
+        if risk_tags:
+            negatives.extend(risk_tags)
+        # The labels mean strength of evidence, NOT probability of returns.
+        evidence = "보통" if pe is not None and estimates is not None and peer is not None else "제한적"
+        status = "매수 조건 검토" if evidence == "보통" else "조사 후보"
+        if risk_tags:
+            status = "가격·과열 주의"
         thesis = {
-            "bull_case": f"익년도 EPS 성장률 컨센서스 {estimates:.1f}%; 주가 {asset['market']['price']:.2f}와 실제 실적을 추적",
-            "bear_case": f"선행 PER {pe:.1f}배, 비교 기업 중앙값 {peer:.1f}배; 전망 하향·금리 상승 시 하락 위험",
-            "entry_condition": "다음 분기 공시·이익추정 재확인, 가격 급등·시장 스트레스 확대가 없는지 확인 후 검토",
-            "invalidation": "다음 실적 발표에서 EPS 성장 가설 훼손, 회계 위험 또는 신규 유동성 문제 확인",
-            "source_urls": asset["sources"],
+            "bull_case": "; ".join(positives) + ". 이 숫자가 실제 실적 개선으로 이어지는지 추적",
+            "bear_case": "; ".join(negatives),
+            "entry_condition": "다음 실적·기업 전망과 현재 가격 재확인 후 분할 진입 여부 검토; 매수 시점 확정 아님",
+            "invalidation": "이익 전망 하향 또는 재무·유동성 위험 확인 시 가설 재평가",
+            "source_urls": source_urls,
         }
-        snapshot["assets"][ticker] = {
-            "name": asset["name"], "market": {
+        asset["warning"] = "과열/가치 경고: " + ", ".join(risk_tags) if risk_tags else None
+        asset["candidate_status"] = status
+        snapshot["assets"][symbol] = {
+            "name": asset["name"],
+            "market": {
                 "as_of": asset["market"]["as_of"],
                 "source_url": asset["market"]["source_url"],
-                "price": asset["market"]["price"],
+                "price": price,
+                "return_3m_pct": r3,
+                "ma200_gap_pct": gap,
             },
+            # These are vendor estimates recorded at the quote date,
+            # NOT claims validated or published by an SEC filing.
             "financials": {
-                "as_of": filing["as_of"] + "T00:00:00+00:00",
-                "source_url": filing["source_url"],
+                "as_of": asset["market"]["as_of"],
+                "source_url": asset["market"]["source_url"],
                 "forward_pe": pe,
                 "peer_forward_pe_median": peer,
                 "expected_earnings_growth_pct": estimates,
+                "kind": "vendor_estimates",
             },
             "thesis": thesis,
+            "risk_tags": risk_tags,
+            "evidence_level": evidence,
+            "candidate_status": status,
+            "sec_filing": filing,
         }
     return snapshot
