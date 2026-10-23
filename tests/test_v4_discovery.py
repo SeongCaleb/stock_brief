@@ -71,7 +71,7 @@ class DiscoveryTests(unittest.TestCase):
         self.assertIn("금리 변화", html)
         self.assertEqual(html.count("Rate news"), 0)
         self.assertEqual(html.count("금리 변화"), 1)
-        self.assertIn("추천", html)
+        self.assertIn("투자 후보", html)
         self.assertIn("VOO", html)
         self.assertIn("2026-10-24", html)
 
