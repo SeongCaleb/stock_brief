@@ -154,7 +154,7 @@ def _recent_sec_filing(session, cik, user_agent, now):
         if form not in ("10-K", "10-Q"):
             continue
         date = datetime.strptime(d, "%Y-%m-%d").date()
-        if 0 <= (now.date() - date).days <= 160:
+        if 0 <= (now.date() - date).days <= 120:
             link = f"https://www.sec.gov/Archives/edgar/data/{cik}/{accession.replace('-', '')}/{document}"
             return {"as_of": d, "source_url": link, "form": form}
     return None
@@ -269,7 +269,7 @@ def collect_snapshot(now=None, session=None, finance=None, watchlist=None):
         peer = asset["peer_forward_pe_median"]
         ticker = asset["ticker"]
         thesis = {
-            "bull_case": f"익년도 EPS 성장률 컨센서스 {estimates:.1f}%; 가격 {market['price']:.2f}가 아닌 실제 실적 실현을 추적",
+            "bull_case": f"익년도 EPS 성장률 컨센서스 {estimates:.1f}%; 주가 {asset['market']['price']:.2f}와 실제 실적을 추적",
             "bear_case": f"선행 PER {pe:.1f}배, 비교 기업 중앙값 {peer:.1f}배; 전망 하향·금리 상승 시 하락 위험",
             "entry_condition": "다음 분기 공시·이익추정 재확인, 가격 급등·시장 스트레스 확대가 없는지 확인 후 검토",
             "invalidation": "다음 실적 발표에서 EPS 성장 가설 훼손, 회계 위험 또는 신규 유동성 문제 확인",
