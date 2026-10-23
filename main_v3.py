@@ -100,7 +100,7 @@ def make_email():
     seen = load_seen()
     old = load_tracking()
     fetched = collect(seen)
-    articles = dated_articles(fetched)
+    articles = unique_events(dated_articles(fetched))
     print(f"[info] 신규 RSS {len(fetched)}건, 유효 기사 {len(articles)}건")
     selected = unique_events(triage(articles) if articles else [])
     selected = enrich(selected)
