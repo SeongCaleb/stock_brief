@@ -71,6 +71,14 @@ def parse_wepoll_listing(html, category, page_url):
             continue
         if len(title) < 10 or title in ("댓글", "이전글", "다음글") or post_id in seen:
             continue
+        if category == "stock" and not re.search(
+            r"주식|증시|증권|국장|미장|금리|환율|환전|채권|국채|ETF|종목|반도체|실적|"
+            r"투자|고평가|저평가|레버리지|인버스|원유|유가|AI|코스피|나스닥|"
+            r"삼성|하이닉스|엔비디아|마이크로소프트|구글|알파벳|애플|"
+            r"테슬라|경제|물가|배당|매도|매수|금융|대출|인플레|인플레이션",
+            title, re.I
+        ):
+            continue
         seen.add(post_id)
         result.append({"id": f"wepoll:{category}:{post_id}",
                        "source": "위폴 뉴스" if category == "news" else "위폴 경제",
