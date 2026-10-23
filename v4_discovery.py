@@ -150,3 +150,22 @@ def next_tracking(snapshot, old, run_date=None):
     combined = {**prev, **latest}
     return {"latest": dict(list(combined.items())[-120:]),
             "last_sent_date": run_date}
+
+
+def diversify_candidates(candidates, count=3):
+    """Prefer distinct reported vendor sectors, but do not invent sector labels."""
+    chosen, sectors = [], set()
+    for candidate in candidates:
+        sector = candidate.get("sector") or "기타"
+        if sector in sectors and sector != "기타":
+            continue
+        chosen.append(candidate)
+        sectors.add(sector)
+        if len(chosen) >= count:
+            return chosen
+    for candidate in candidates:
+        if candidate not in chosen:
+            chosen.append(candidate)
+            if len(chosen) >= count:
+                break
+    return chosen
