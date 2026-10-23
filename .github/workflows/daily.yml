@@ -38,6 +38,8 @@ jobs:
           MAIL_TO: ${{ secrets.MAIL_TO }}
           ANTHROPIC_MODEL: ${{ vars.ANTHROPIC_MODEL }}
           MAX_ARTICLES: ${{ vars.MAX_ARTICLES }}
+          SEC_USER_AGENT: ${{ vars.SEC_USER_AGENT }}
+          STOCK_WATCHLIST: ${{ vars.STOCK_WATCHLIST }}
           EVENT_NAME: ${{ github.event_name }}
           MANUAL_SEND: ${{ inputs.send_email }}
         shell: bash
