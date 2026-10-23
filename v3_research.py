@@ -196,14 +196,18 @@ def research_html(regime, candidates, has_news):
         "개별 종목의 재무위험·고평가·단기 과열은 서로 다릅니다. "
         "유효한 공식/시세 자료 없이는 안전하다고 판정하지 않습니다.</div>",
         "</div>",
-        "<h3 style='font-size:15px'>🎯 최종 매수 검토 후보 (조건부)</h3>",
+        "<h3 style='font-size:15px'>🎯 관심·매수 검토 후보 (조건부)</h3>",
+        "<p style='font-size:12px;color:#6b7280'>추천 탐색은 빠르게 진행하지만, 확신도는 자료 수준에 따라 구분합니다. 모두 3~6개월 이상 관찰 대상이며 확정 매수 신호는 아닙니다.</p>",
     ]
     if not candidates:
-        parts.append("<p>이번에는 추천 보류 — 검증된 최신 시세·재무·독립된 근거가 충분하지 않습니다.</p>")
+        parts.append("<p>이번에는 추천 보류 — 신선한 시세 및 최소 한 가지 가치·성장 지표가 없어 조사할 후보를 선정하지 못했습니다.</p>")
     for i, item in enumerate(candidates, 1):
         parts.append(
             "<div style='margin:12px 0;padding:12px;border:1px solid #e5e7eb;background:#fff'>"
             f"<b>{i}. {escape(item['name'])} ({escape(item['ticker'])})</b>"
+            f"<p><b>{escape(item['status'])}</b> · 근거 수준: {escape(item['evidence'])}"
+            f" · 가격 기준일: {escape(item['quote_date'])}</p>"
+            + (f"<p style='color:#b45309'>⚠️ {escape(', '.join(item['risk_tags']))}</p>" if item["risk_tags"] else "")
             f"<p>성장 가설: {escape(item['bull_case'])}</p>"
             f"<p>반론: {escape(item['bear_case'])}</p>"
             f"<p>진입 검토 조건: {escape(item['entry_condition'])}</p>"
@@ -218,5 +222,5 @@ def research_html(regime, candidates, has_news):
         parts.append("<p>오늘 선별된 새로운 중요 기사가 없습니다. 기사 수집 불가 가능성도 점검해야 합니다.</p>")
     parts.append("<div style='color:#6b7280;font-size:11px;margin-top:12px'>"
                  "현재 보유 종목 없음(사용자 제공 정보). 투자 여부와 주문은 사용자가 결정합니다. "
-                 "자료 미확보 시 시장 판단과 추천은 보류합니다.</div>")
+                 "벤더 추정치는 확정 실적이 아니며, 자료 미확보 시 판단은 보류합니다.</div>")
     return "\n".join(parts)
