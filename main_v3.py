@@ -122,7 +122,7 @@ def make_email():
     community["statuses"]["세이브티커"] = save_report["status"]
     # Undated website listing is discovery-only, not asserted as today's news.
     for item in save_report["listing"][:3]:
-        community["items"].insert(0, {"source": "세이브티커 SAVE PICK",
+        community["items"].insert(0, {"source": "세이브티커 공개 뉴스 목록",
             "title": item["title"], "url": item["link"],
             "basis": "공개 뉴스 목록 링크; 발행 시각·내용 미검증"})
     print("[info] 공개 커뮤니티/영상 새 제목:", len(community["items"]), community["statuses"])
@@ -184,6 +184,7 @@ def main():
     action = cli.add_mutually_exclusive_group(required=True)
     action.add_argument("--preview", action="store_true")
     action.add_argument("--send", action="store_true")
+    action.add_argument("--send-revision", action="store_true", help="One explicitly requested revision email per KST day")
     args = cli.parse_args()
     today = datetime.now(KST).date().isoformat()
     state = _load_state()
@@ -191,7 +192,11 @@ def main():
         print(f"[info] {today} 발송 기록이 있어 중복 발송하지 않습니다")
         return
 
-    if args.send:
+    if args.send_revision and today in state.get("revision_sent_dates", []):
+        print(f"[info] {today} 수정판 메일 발송 기록이 있어 중복 발송을 방지합니다")
+        return
+
+    if args.send or args.send_revision:
         missing = [
             key for key, value in {
                 "ANTHROPIC_API_KEY": ANTHROPIC_API_KEY,
@@ -212,7 +217,8 @@ def main():
         return
 
     # SMTP succeeds BEFORE either dedup cache is persisted.
-    send(f"📊 Stock Brief v4 · {date_str} | 추천 {picks_count} · 핵심 뉴스 {news_count}", html)
+    subject_tag = "업데이트판 · " if args.send_revision else ""
+    send(f"📊 Stock Brief v4.2 · {subject_tag}{date_str} | 후보 {picks_count} · 뉴스 {news_count}", html)
     print(f"[info] 이메일 발송 성공 → {MAIL_TO}")
     seen.update(sent_uids)
     save_seen(seen)
@@ -224,7 +230,11 @@ def main():
     community_tmp = community_path.with_suffix(".tmp")
     community_tmp.write_text(json.dumps(community_state, ensure_ascii=False, indent=2), encoding="utf-8")
     community_tmp.replace(community_path)
-    state["sent_dates"] = list(dict.fromkeys([*state["sent_dates"], today]))[-45:]
+    if args.send_revision:
+        state["revision_sent_dates"] = list(dict.fromkeys(
+            [*state.get("revision_sent_dates", []), today]))[-45:]
+    else:
+        state["sent_dates"] = list(dict.fromkeys([*state["sent_dates"], today]))[-45:]
     _save_state(state)
 
 
