@@ -18,6 +18,7 @@ from mailer import KST, block_html, build_email, glance_html, send
 from sources import collect, enrich, load_seen, save_seen
 from summarize import headline_of, summarize, triage
 from v3_research import dated_articles, research_html, research_snapshot
+from v3_market_data import collect_snapshot
 
 STATE_PATH = Path("v3_delivery_state.json")
 REPORT_DIR = Path("reports")
@@ -72,6 +73,23 @@ def _update_prompts():
     )
 
 
+def asset_comparison_html(snapshot):
+    from html import escape
+    rows = []
+    for a in snapshot.get("asset_classes", []):
+        change = a.get("return_3m_pct")
+        trend = a.get("ma200_gap_pct")
+        rows.append(f"<tr><td>{escape(str(a.get('name', '')))} ({escape(str(a.get('ticker', '')) )})</td>"
+                    f"<td>{escape(str(change)) if change is not None else '자료 부족'}%</td>"
+                    f"<td>{escape(str(trend)) if trend is not None else '자료 부족'}%</td>"
+                    f"<td>{escape(str(a.get('as_of', '')[:10]))}</td></tr>")
+    if not rows:
+        return "<p>자산별 비교: 검증 가능한 최근 데이터 없음</p>"
+    return ("<h3>📊 주식·채권·금 3개월 비교 (매수 추천 아님)</h3>"
+            "<table cellpadding='6' style='font-size:12px'><tr><th>자산</th><th>3개월 %</th><th>200일선 대비 %</th><th>기준일</th></tr>"
+            + "".join(rows) + "</table><p style='font-size:11px'>USD 기준 가격 변화. ETF별 위험·변동성·환율은 별도 고려.</p>")
+
+
 def make_email():
     _prepare_sources()
     _update_prompts()
@@ -98,8 +116,18 @@ def make_email():
         ))
         picks.append(article)
         sent_uids.append(article["uid"])
-    regime, candidates = research_snapshot()
+    snapshot_path = REPORT_DIR / "market_snapshot.json"
+    REPORT_DIR.mkdir(exist_ok=True)
+    try:
+        snapshot = collect_snapshot()
+        snapshot_path.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2), encoding="utf-8")
+        print(f"[info] 시장 데이터: 거시 {len(snapshot['macro'])}개, ETF {len(snapshot['asset_classes'])}개, 후보 {len(snapshot['assets'])}개")
+    except Exception as exc:
+        print(f"[warn] 시장 데이터 수집 실패: {type(exc).__name__}")
+        snapshot = {"asset_classes": [], "collection_warnings": ["시장 데이터 수집 실패"]}
+    regime, candidates = research_snapshot(str(snapshot_path))
     supplement = research_html(regime, candidates, bool(cards))
+    supplement += asset_comparison_html(snapshot)
     date_str, html = build_email(glance_html(picks) if picks else "", cards)
     # Place research inside the existing mail container.
     prefix, marker, suffix = html.rpartition("</div>")
