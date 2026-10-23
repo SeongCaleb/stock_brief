@@ -84,8 +84,24 @@ def research_snapshot(path="market_snapshot.json", now=None):
         data = {}
     macro = data.get("macro") or {}
     indicators = ("vix", "high_yield_spread_pct", "above_200dma_pct")
+    # Broad market breadth is NOT available from price index alone. Do not
+    # substitute SPY trend for breadth or label it a full bubble diagnosis.
     if not all(_fresh(macro.get(k), 7, now) for k in indicators):
-        regime = "판단 보류 — 최신 VIX·신용 스프레드·시장 폭 자료 부족"
+        keys = ("vix", "high_yield_spread_pct", "spy_200dma_gap_pct")
+        if all(_fresh(macro.get(k), 7, now) for k in keys):
+            try:
+                vix = float(macro["vix"]["value"])
+                spread = float(macro["high_yield_spread_pct"]["value"])
+                gap = float(macro["spy_200dma_gap_pct"]["value"])
+                hits = sum((vix >= 30, spread >= 5, gap <= -10))
+                regime = ("복합 시장 스트레스 경계" if hits >= 2
+                          else "일부 위험 신호" if hits == 1
+                          else "세 가지 스트레스 기준 미충족")
+                regime += " — SPY 200일선은 시장 폭 지표가 아니며 버블 판정 불가"
+            except (ValueError, TypeError, KeyError):
+                regime = "판단 보류 — 지표 형식 오류"
+        else:
+            regime = "판단 보류 — 최신 VIX·신용 스프레드·추세 자료 부족"
     else:
         try:
             vix = float(macro["vix"]["value"])
