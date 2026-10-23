@@ -107,6 +107,7 @@ def _history(yf, symbol, now):
         "return_3m_pct": ret(63),
         "return_6m_pct": ret(126),
         "ma200_gap_pct": round(gap, 2) if gap is not None else None,
+        "below_52w_high_pct": round((price / max(vals[-min(len(vals), 252):]) - 1) * 100, 2),
     }
 
 
@@ -118,6 +119,26 @@ def _safe_info(ticker):
         print("[warn] vendor fundamentals unavailable:", type(exc).__name__)
         return {}
 
+
+
+
+def _detail_metrics(info, sector):
+    """Indicative vendor metrics; optional and never treated as audited facts."""
+    cap = _number(info.get("marketCap"))
+    fcf = _number(info.get("freeCashflow"))
+    rev = _number(info.get("revenueGrowth"))
+    op = _number(info.get("operatingMargins"))
+    debt = _number(info.get("totalDebt"))
+    cash = _number(info.get("totalCash"))
+    return {
+        "revenue_growth_yoy_pct": round(100 * rev, 1) if rev is not None and abs(rev) < 10 else None,
+        "operating_margin_pct": round(100 * op, 1) if op is not None and abs(op) < 10 else None,
+        "fcf_yield_pct": (
+            round(100 * fcf / cap, 1)
+            if fcf is not None and cap and cap > 0 and sector != "Financial Services" else None
+        ),
+        "net_debt_bil_usd": round((debt - cash) / 1e9, 2) if debt is not None and cash is not None else None,
+    }
 
 def _future_growth(ticker):
     """Next fiscal year's *estimated* EPS growth; never substitute trailing earnings."""
@@ -229,7 +250,8 @@ def collect_snapshot(now=None, session=None, finance=None, watchlist=None):
                  "sector": sector, "market": market,
                  "forward_pe": forward_pe,
                  "expected_earnings_growth_pct": round(estimates, 2) if estimates is not None else None,
-                 "warning": None}
+                 "warning": None,
+                 "detail": _detail_metrics(info, sector)}
         sources = [market["source_url"]]
         if ciks.get(symbol):
             try:
@@ -313,12 +335,15 @@ def collect_snapshot(now=None, session=None, finance=None, watchlist=None):
         snapshot["assets"][symbol] = {
             "name": asset["name"],
             "sector": asset.get("sector", ""),
+            "detail": asset.get("detail", {}),
             "market": {
                 "as_of": asset["market"]["as_of"],
                 "source_url": asset["market"]["source_url"],
                 "price": price,
                 "return_3m_pct": r3,
                 "ma200_gap_pct": gap,
+                "below_52w_high_pct": asset["market"].get("below_52w_high_pct"),
+                "return_6m_pct": asset["market"].get("return_6m_pct"),
             },
             # These are vendor estimates recorded at the quote date,
             # NOT claims validated or published by an SEC filing.
