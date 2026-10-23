@@ -22,6 +22,8 @@ from v3_market_data import collect_snapshot
 from v4_discovery import (discovery_universe, unique_events, load_tracking,
                           tracking_changes, next_tracking, diversify_candidates, TRACKING_PATH)
 from v4_email import make_digest
+from v4_community import (load_seen as load_community_seen, collect_public_signals,
+                          STATE_FILE as COMMUNITY_STATE_FILE)
 
 STATE_PATH = Path("v3_delivery_state.json")
 REPORT_DIR = Path("reports")
@@ -101,6 +103,13 @@ def make_email():
     old = load_tracking()
     fetched = collect(seen)
     articles = unique_events(dated_articles(fetched))
+    community_old = load_community_seen()
+    try:
+        community = collect_public_signals(previous=community_old)
+    except Exception as exc:
+        community = {"items": [], "statuses": {"소스 수집": "실패: " + type(exc).__name__},
+                     "next_seen": community_old}
+    print("[info] 공개 커뮤니티/영상 새 제목:", len(community["items"]), community["statuses"])
     print(f"[info] 신규 RSS {len(fetched)}건, 유효 기사 {len(articles)}건")
     selected = unique_events(triage(articles) if articles else [])
     selected = enrich(selected)
@@ -123,7 +132,8 @@ def make_email():
     snapshot_path = REPORT_DIR / "market_snapshot.json"
     watched = list((old.get("latest") or {}).keys())
     universe = discovery_universe(
-        articles, previous=watched, extra=os.getenv("STOCK_WATCHLIST"),
+        [{"title": x["title"], "summary": ""} for x in community["items"][:3]] + articles,
+        previous=watched, extra=os.getenv("STOCK_WATCHLIST"),
         limit=int(os.getenv("DISCOVERY_LIMIT", "18"))
     )
     print(f"[info] 섹터 순환·뉴스 기반 신규 조사 종목 {len(universe)}개")
@@ -141,9 +151,9 @@ def make_email():
     regime, candidates = research_snapshot(str(snapshot_path))
     candidates = diversify_candidates(candidates, count=3)
     changes = tracking_changes(snapshot, old)
-    date_str, html = make_digest(picks, snapshot, regime, candidates, changes)
+    date_str, html = make_digest(picks, snapshot, regime, candidates, changes, community=community)
     ledger = next_tracking(snapshot, old)
-    return date_str, html, seen, sent_uids, len(picks), len(candidates), ledger
+    return date_str, html, seen, sent_uids, len(picks), len(candidates), ledger, community["next_seen"]
 
 
 def main():
@@ -170,7 +180,7 @@ def main():
         if missing:
             raise RuntimeError("필수 Secret이 설정되지 않았습니다: " + ", ".join(missing))
 
-    date_str, html, seen, sent_uids, news_count, picks_count, ledger = make_email()
+    date_str, html, seen, sent_uids, news_count, picks_count, ledger, community_state = make_email()
     REPORT_DIR.mkdir(exist_ok=True)
     (REPORT_DIR / "latest.html").write_text(html, encoding="utf-8")
     print(f"[info] 보고서 생성: 뉴스 {news_count}건, 조건부 추천 후보 {picks_count}건")
@@ -187,6 +197,10 @@ def main():
     track_temp = track_path.with_suffix(".tmp")
     track_temp.write_text(json.dumps(ledger, ensure_ascii=False, indent=2), encoding="utf-8")
     track_temp.replace(track_path)
+    community_path = Path(COMMUNITY_STATE_FILE)
+    community_tmp = community_path.with_suffix(".tmp")
+    community_tmp.write_text(json.dumps(community_state, ensure_ascii=False, indent=2), encoding="utf-8")
+    community_tmp.replace(community_path)
     state["sent_dates"] = list(dict.fromkeys([*state["sent_dates"], today]))[-45:]
     _save_state(state)
 
