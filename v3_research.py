@@ -123,39 +123,66 @@ def research_snapshot(path="market_snapshot.json", now=None):
         price = asset.get("market") or {}
         financials = asset.get("financials") or {}
         thesis = asset.get("thesis") or {}
-        refs = thesis.get("source_urls") or []
-        hosts = {
-            urlsplit(u).hostname
-            for u in refs if isinstance(u, str) and u.startswith("https://")
-        }
-        hosts.discard(None)
-        if not (_fresh(price, 7, now) and _fresh(financials, 120, now)
-                and len(hosts) >= 2 and all(thesis.get(k) for k in REQUIRED_THESIS)):
+        if not (_fresh(price, 7, now) and _fresh(financials, 30, now)):
             continue
         if financials.get("going_concern_warning") is True:
             continue
+        if not all(thesis.get(k) for k in REQUIRED_THESIS):
+            continue
+        refs = [u for u in (thesis.get("source_urls") or [])
+                if isinstance(u, str) and u.startswith("https://")
+                and urlsplit(u).hostname]
+        if not refs:
+            continue
         try:
-            pe = float(financials.get("forward_pe"))
-            peer = float(financials.get("peer_forward_pe_median"))
-            growth = float(financials.get("expected_earnings_growth_pct"))
-        except (TypeError, ValueError):
+            market_price = float(price["price"])
+        except (ValueError, TypeError, KeyError):
             continue
-        # Do not label an expensive stock an unconditional buy.
-        overvalued = pe > 0 and peer > 0 and pe / peer >= 1.5 and growth < 20
-        if pe <= 0 or peer <= 0 or growth < -100:
+        if not 0 < market_price < 1e8:
             continue
-        if overvalued:
+        def optional_numeric(field):
+            try:
+                value = float(financials[field])
+                return value if -1e5 < value < 1e5 else None
+            except (ValueError, TypeError, KeyError):
+                return None
+        pe = optional_numeric("forward_pe")
+        peer = optional_numeric("peer_forward_pe_median")
+        growth = optional_numeric("expected_earnings_growth_pct")
+        pe = pe if pe is not None and pe > 0 else None
+        peer = peer if peer is not None and peer > 0 else None
+        growth = growth if growth is not None and -80 <= growth <= 200 else None
+        # A single verified, dated vendor dataset can surface a RESEARCH idea.
+        # It cannot produce an unconditional buy or a high-confidence claim.
+        if pe is None and growth is None:
             continue
-        score = (growth - max(0.0, (pe / peer - 1.0) * 20)) if peer > 0 else growth
+        tags = [str(t)[:90] for t in asset.get("risk_tags", []) if isinstance(t, str)]
+        if pe and peer and pe / peer >= 1.5 and (growth is None or growth < 20):
+            if "동종 기업 대비 고평가 주의" not in tags:
+                tags.append("동종 기업 대비 고평가 주의")
+        evidence = "보통" if pe is not None and peer is not None and growth is not None else "제한적"
+        label = "매수 조건 검토" if evidence == "보통" else "조사 후보"
+        if tags:
+            label = "가격·과열 주의"
+        # Explicit heuristic priority, never a forecast or target price.
+        score = (growth * 0.5 if growth is not None else -10)
+        score -= (pe * 0.2 if pe is not None else 10)
+        if pe is not None and peer is not None:
+            score += max(-12, min(8, (peer - pe) * 0.5))
+        score -= 12 * len(tags)
         candidates.append({
             "ticker": str(ticker).upper()[:16],
             "name": str(asset.get("name") or ticker)[:70],
-            "score": score,
-            "bull_case": str(thesis["bull_case"])[:240],
-            "bear_case": str(thesis["bear_case"])[:240],
-            "entry_condition": str(thesis["entry_condition"])[:240],
-            "invalidation": str(thesis["invalidation"])[:240],
-            "sources": [str(u) for u in refs[:3]],
+            "score": round(score, 2),
+            "status": label,
+            "evidence": evidence,
+            "risk_tags": tags,
+            "quote_date": str(price.get("as_of", ""))[:10],
+            "bull_case": str(thesis["bull_case"])[:300],
+            "bear_case": str(thesis["bear_case"])[:300],
+            "entry_condition": str(thesis["entry_condition"])[:300],
+            "invalidation": str(thesis["invalidation"])[:300],
+            "sources": refs[:3],
         })
     return regime, sorted(candidates, key=lambda x: -x["score"])[:3]
 
