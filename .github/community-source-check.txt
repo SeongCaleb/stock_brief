@@ -1,1 +1,2 @@
 One-time safe check of public favorite sources, no email or secrets.
+Wepoll parser diagnosis retry.
