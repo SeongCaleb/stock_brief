@@ -1,0 +1,2 @@
+One-time requested Stock Brief V4 SMTP send trigger, KST 2026-10-24.
+This path is referenced by the v4 push workflow; do not edit to avoid another trigger.
