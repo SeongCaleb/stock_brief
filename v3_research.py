@@ -45,14 +45,11 @@ def dated_articles(items, now=None, max_age_hours=72):
         pub = a.get("published")
         if not pub:
             continue
+        import calendar
         try:
-            age = (now.timestamp() - time.mktime(pub)) / 3600
+            age = (now.timestamp() - calendar.timegm(pub)) / 3600
         except (ValueError, OverflowError, TypeError):
             continue
-        # RSS parsed times are UTC; time.mktime uses local timezone.
-        # Use calendar.timegm instead for timezone-independent processing.
-        import calendar
-        age = (now.timestamp() - calendar.timegm(pub)) / 3600
         if -2 <= age <= max_age_hours:
             result.append(a)
     return result
