@@ -207,7 +207,7 @@ def collect_snapshot(now=None, session=None, finance=None, watchlist=None):
         item = str(item).strip().upper()
         if item and item not in symbols and all(c in VALID_SYMBOL for c in item):
             symbols.append(item)
-    symbols = symbols[:12]
+    symbols = symbols[:24]
     sec_header = os.getenv("SEC_USER_AGENT", "").strip()
     ciks = {}
     if sec_header and "@" in sec_header:
@@ -312,6 +312,7 @@ def collect_snapshot(now=None, session=None, finance=None, watchlist=None):
         asset["candidate_status"] = status
         snapshot["assets"][symbol] = {
             "name": asset["name"],
+            "sector": asset.get("sector", ""),
             "market": {
                 "as_of": asset["market"]["as_of"],
                 "source_url": asset["market"]["source_url"],
