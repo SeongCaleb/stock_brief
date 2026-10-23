@@ -22,6 +22,8 @@ from v3_market_data import collect_snapshot
 from v4_discovery import (discovery_universe, unique_events, load_tracking,
                           tracking_changes, next_tracking, diversify_candidates, TRACKING_PATH)
 from v4_email import make_digest
+from v4_deep_research import research_candidates
+from summarize import _call as claude_call
 from v4_community import (load_seen as load_community_seen, collect_public_signals,
                           STATE_FILE as COMMUNITY_STATE_FILE)
 
@@ -154,6 +156,7 @@ def make_email():
     snapshot_path.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2), encoding="utf-8")
     regime, candidates = research_snapshot(str(snapshot_path))
     candidates = diversify_candidates(candidates, count=3)
+    candidates = research_candidates(candidates, picks, community.get("items", []), claude_call)
     changes = tracking_changes(snapshot, old)
     date_str, html = make_digest(picks, snapshot, regime, candidates, changes, community=community)
     ledger = next_tracking(snapshot, old)
