@@ -208,7 +208,7 @@ def research_html(regime, candidates, has_news):
             f"<p><b>{escape(item['status'])}</b> · 근거 수준: {escape(item['evidence'])}"
             f" · 가격 기준일: {escape(item['quote_date'])}</p>"
             + (f"<p style='color:#b45309'>⚠️ {escape(', '.join(item['risk_tags']))}</p>" if item["risk_tags"] else "")
-            f"<p>성장 가설: {escape(item['bull_case'])}</p>"
+            + f"<p>성장 가설: {escape(item['bull_case'])}</p>"
             f"<p>반론: {escape(item['bear_case'])}</p>"
             f"<p>진입 검토 조건: {escape(item['entry_condition'])}</p>"
             f"<p>가설 무효화: {escape(item['invalidation'])}</p>"
