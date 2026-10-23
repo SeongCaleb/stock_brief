@@ -23,6 +23,7 @@ from v4_discovery import (discovery_universe, unique_events, load_tracking,
                           tracking_changes, next_tracking, diversify_candidates, TRACKING_PATH)
 from v4_email import make_digest
 from v4_deep_research import research_candidates
+from v4_saveticker import collect_saveticker
 from summarize import _call as claude_call
 from v4_community import (load_seen as load_community_seen, collect_public_signals,
                           STATE_FILE as COMMUNITY_STATE_FILE)
@@ -104,13 +105,24 @@ def make_email():
     seen = load_seen()
     old = load_tracking()
     fetched = collect(seen)
-    articles = unique_events(dated_articles(fetched))
+    save_report = collect_saveticker()
+    save_articles = [x for x in save_report["articles"] if x["uid"] not in seen]
+    # Editorial priority: surface SaveTicker market-impact items early, but
+    # triage still decides importance across all sources.
+    articles = unique_events(dated_articles(save_articles + fetched))
+    print("[info] 세이브티커:", save_report["status"], "새 색인 기사", len(save_articles))
     community_old = load_community_seen()
     try:
         community = collect_public_signals(previous=community_old)
     except Exception as exc:
         community = {"items": [], "statuses": {"소스 수집": "실패: " + type(exc).__name__},
                      "next_seen": community_old}
+    community["statuses"]["세이브티커"] = save_report["status"]
+    # Undated website listing is discovery-only, not asserted as today's news.
+    for item in save_report["listing"][:3]:
+        community["items"].insert(0, {"source": "세이브티커 SAVE PICK",
+            "title": item["title"], "url": item["link"],
+            "basis": "공개 뉴스 목록 링크; 발행 시각·내용 미검증"})
     print("[info] 공개 커뮤니티/영상 새 제목:", len(community["items"]), community["statuses"])
     REPORT_DIR.mkdir(exist_ok=True)
     (REPORT_DIR / "community_sources.json").write_text(
@@ -156,7 +168,9 @@ def make_email():
     snapshot_path.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2), encoding="utf-8")
     regime, candidates = research_snapshot(str(snapshot_path))
     candidates = diversify_candidates(candidates, count=3)
-    candidates = research_candidates(candidates, picks, community.get("items", []), claude_call)
+    candidates = research_candidates(
+        candidates, save_articles[:5] + picks,
+        community.get("items", []), claude_call)
     changes = tracking_changes(snapshot, old)
     date_str, html = make_digest(picks, snapshot, regime, candidates, changes, community=community)
     ledger = next_tracking(snapshot, old)
