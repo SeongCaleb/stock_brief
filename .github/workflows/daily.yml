@@ -2,6 +2,9 @@ name: Stock Brief v3 Daily Email
 on:
   schedule:
     - cron: "30 23 * * *" # 08:30 Asia/Seoul, may be delayed by GitHub
+  push:
+    paths:
+      - ".github/mail-now-v4.txt" # one-time user-requested send, not every push
   workflow_dispatch:
     inputs:
       send_email:
@@ -40,12 +43,13 @@ jobs:
           MAX_ARTICLES: ${{ vars.MAX_ARTICLES }}
           SEC_USER_AGENT: ${{ vars.SEC_USER_AGENT }}
           STOCK_WATCHLIST: ${{ vars.STOCK_WATCHLIST }}
+          DISCOVERY_LIMIT: "18"
           EVENT_NAME: ${{ github.event_name }}
           MANUAL_SEND: ${{ inputs.send_email }}
         shell: bash
         run: |
           set -euo pipefail
-          if [[ "$EVENT_NAME" == "schedule" || "$MANUAL_SEND" == "true" ]]; then
+          if [[ "$EVENT_NAME" == "schedule" || "$EVENT_NAME" == "push" || "$MANUAL_SEND" == "true" ]]; then
             python main_v3.py --send
           else
             python main_v3.py --preview
@@ -55,17 +59,19 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: stock-brief-${{ github.run_id }}
-          path: reports/latest.html
+          path: |
+            reports/latest.html
+            reports/market_snapshot.json
           if-no-files-found: ignore
           retention-days: 7
       - name: Persist delivered state
-        if: success() && (github.event_name == 'schedule' || inputs.send_email == true)
+        if: success() && (github.event_name == 'schedule' || github.event_name == 'push' || inputs.send_email == true)
         shell: bash
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add seen.json v3_delivery_state.json
+          git add seen.json v3_delivery_state.json v4_thesis_history.json
           if ! git diff --cached --quiet; then
             git commit -m "chore: record delivered v3 brief [skip ci]"
             git pull --rebase origin main
