@@ -1,24 +1,24 @@
 {
   "latest": {
     "ORCL": {
-      "date": "2026-10-26",
-      "price": 126.16,
-      "forward_pe": 11.479663,
+      "date": "2026-10-27",
+      "price": 126.06,
+      "forward_pe": 11.468685,
       "growth_estimate_pct": 35.0,
       "source": "https://finance.yahoo.com/quote/ORCL"
     },
     "TMUS": {
-      "date": "2026-10-26",
-      "price": 146.54,
-      "forward_pe": 10.159273,
+      "date": "2026-10-27",
+      "price": 146.93,
+      "forward_pe": 10.186311,
       "growth_estimate_pct": 27.2,
       "source": "https://finance.yahoo.com/quote/TMUS"
     },
     "BKNG": {
-      "date": "2026-10-26",
-      "price": 155.83,
-      "forward_pe": 12.596191,
-      "growth_estimate_pct": 18.33,
+      "date": "2026-10-27",
+      "price": 153.14,
+      "forward_pe": 12.37813,
+      "growth_estimate_pct": 18.31,
       "source": "https://finance.yahoo.com/quote/BKNG"
     },
     "COST": {
@@ -78,9 +78,9 @@
       "source": "https://finance.yahoo.com/quote/EQIX"
     },
     "NVDA": {
-      "date": "2026-10-24",
-      "price": 212.1,
-      "forward_pe": 13.326443,
+      "date": "2026-10-27",
+      "price": 216.0,
+      "forward_pe": 13.572443,
       "growth_estimate_pct": 70.9,
       "source": "https://finance.yahoo.com/quote/NVDA"
     },
@@ -169,10 +169,10 @@
       "source": "https://finance.yahoo.com/quote/FLNC"
     },
     "AAPL": {
-      "date": "2026-10-25",
-      "price": 347.73,
-      "forward_pe": 36.332245,
-      "growth_estimate_pct": 8.43,
+      "date": "2026-10-27",
+      "price": 343.91,
+      "forward_pe": 35.966515,
+      "growth_estimate_pct": 8.24,
       "source": "https://finance.yahoo.com/quote/AAPL"
     },
     "MSFT": {
@@ -258,7 +258,84 @@
       "forward_pe": 23.777382,
       "growth_estimate_pct": -18.19,
       "source": "https://finance.yahoo.com/quote/AMZN"
+    },
+    "NFLX": {
+      "date": "2026-10-27",
+      "price": 63.9,
+      "forward_pe": 16.950006,
+      "growth_estimate_pct": 5.1,
+      "source": "https://finance.yahoo.com/quote/NFLX"
+    },
+    "MCD": {
+      "date": "2026-10-27",
+      "price": 250.83,
+      "forward_pe": 18.253918,
+      "growth_estimate_pct": 6.65,
+      "source": "https://finance.yahoo.com/quote/MCD"
+    },
+    "PEP": {
+      "date": "2026-10-27",
+      "price": 135.46,
+      "forward_pe": 15.680566,
+      "growth_estimate_pct": 2.9,
+      "source": "https://finance.yahoo.com/quote/PEP"
+    },
+    "JNJ": {
+      "date": "2026-10-27",
+      "price": 266.3,
+      "forward_pe": 22.921762,
+      "growth_estimate_pct": 4.48,
+      "source": "https://finance.yahoo.com/quote/JNJ"
+    },
+    "V": {
+      "date": "2026-10-27",
+      "price": 404.16,
+      "forward_pe": 26.90207,
+      "growth_estimate_pct": 13.54,
+      "source": "https://finance.yahoo.com/quote/V"
+    },
+    "HON": {
+      "date": "2026-10-27",
+      "price": 219.28,
+      "forward_pe": 22.253683,
+      "growth_estimate_pct": 16.72,
+      "source": "https://finance.yahoo.com/quote/HON"
+    },
+    "COP": {
+      "date": "2026-10-27",
+      "price": 151.37,
+      "forward_pe": 14.036743,
+      "growth_estimate_pct": -5.53,
+      "source": "https://finance.yahoo.com/quote/COP"
+    },
+    "APD": {
+      "date": "2026-10-27",
+      "price": 305.72,
+      "forward_pe": 21.166292,
+      "growth_estimate_pct": 7.36,
+      "source": "https://finance.yahoo.com/quote/APD"
+    },
+    "NEE": {
+      "date": "2026-10-27",
+      "price": 82.04,
+      "forward_pe": 18.737823,
+      "growth_estimate_pct": 8.69,
+      "source": "https://finance.yahoo.com/quote/NEE"
+    },
+    "AMT": {
+      "date": "2026-10-27",
+      "price": 188.28,
+      "forward_pe": 26.98697,
+      "growth_estimate_pct": 0.74,
+      "source": "https://finance.yahoo.com/quote/AMT"
+    },
+    "AVGO": {
+      "date": "2026-10-27",
+      "price": 329.17,
+      "forward_pe": 16.940022,
+      "growth_estimate_pct": 66.66,
+      "source": "https://finance.yahoo.com/quote/AVGO"
     }
   },
-  "last_sent_date": "2026-10-26"
+  "last_sent_date": "2026-10-27"
 }
