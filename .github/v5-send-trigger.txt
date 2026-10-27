@@ -1,0 +1,1 @@
+User requested Stock Brief V5 full update and revised email on 2026-10-27 KST. Preview 40442404303 succeeded; PR #13 corrected negative FCF guardrail, CI passed. One-time revision send.
