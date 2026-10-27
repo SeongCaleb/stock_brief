@@ -78,7 +78,7 @@ class DecisionTests(unittest.TestCase):
         self.assertEqual(len(history["observations"]),1)
         self.assertIn("action",history["observations"][0])
         self.assertEqual(changes,[])
-        s["assets"]["XYZ"]["market"]["price"]=242
+        s["assets"]["XYZ"]["market"]["price"]=220
         s["asset_classes"][0]["price"]=630
         outcomes=observed_performance(history,s)
         self.assertEqual(len(outcomes),1)
