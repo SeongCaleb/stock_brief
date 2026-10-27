@@ -227,6 +227,8 @@ def evaluate_candidate(candidate, market):
         action = "제외"; reasons.append("예상 이익 감소와 높은 선행 PER 동시 발생")
     elif risk_count >= 2:
         action = "대기"; reasons.append("고평가·과열 경고 복수")
+    elif fcf is not None and fcf <= -5:
+        action = "조건부 진입 대기"; reasons.append("큰 폭의 잉여현금흐름 적자: 자본지출·차입부담 회복 확인 전 적극 매수 보류")
     elif pe is not None and peer is None and growth is not None and growth >= 50 and pe < 18:
         action = "조건부 진입 대기"; reasons.append("고성장·저PER 조합의 이익 예상기간 및 공급업체 추정 기준 재확인")
     elif r3 is not None and r3 < -15:
@@ -239,6 +241,8 @@ def evaluate_candidate(candidate, market):
         action = "조건부 진입 대기"; reasons.append("가격/가설 확인 조건 필요")
     else:
         action = "대기"; reasons.append("기대 수익 대비 불확실성 또는 가격 부담")
+    # Coverage of vendor fields is not confidence in future stock returns.
+    evidence = "가설 검증 전"
     c.update({"score_v5": score, "score_breakdown": buckets,
               "coverage_v5": coverage, "data_reliability": data_reliability,
               "thesis_confidence": evidence, "price_attractiveness": price_attractiveness,
