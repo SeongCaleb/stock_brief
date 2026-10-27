@@ -109,7 +109,8 @@ def allocation(market, last=None):
     for from_key in decreases:
         transferable = min(5, result[from_key] - target[from_key])
         for to_key in increases:
-            amount = min(transferable, 5, target[to_key] - result[to_key])
+            amount = min(transferable, 5 - (result[to_key]-last[to_key]),
+                         target[to_key] - result[to_key])
             if amount <= 0:
                 continue
             result[from_key] -= amount
@@ -284,7 +285,13 @@ def observed_performance(previous, snapshot):
         ret = round(100*(current/entry-1), 1)
         index_first = num(old.get("voo_price"))
         benchmark_ret = round(100*(current_voo/index_first-1), 1) if current_voo and index_first and index_first>0 else None
+        samples = [num(p.get("price")) for p in history if p.get("ticker") == ticker]
+        samples = [v for v in samples if v is not None]
+        samples.append(current)
+        high_return = round(100*(max(samples)/entry-1),1) if samples else None
+        low_return = round(100*(min(samples)/entry-1),1) if samples else None
         outcomes.append({
+            "observed_max_pct": high_return, "observed_min_pct": low_return,
             "ticker": ticker, "since": old.get("date"), "original_decision": old.get("action"),
             "last_decision": latest[ticker].get("action"), "price_return_pct": ret,
             "benchmark_price_return_pct": benchmark_ret,
