@@ -85,6 +85,14 @@ class DecisionTests(unittest.TestCase):
         self.assertEqual(decision["action_v5"], "조건부 진입 대기")
         self.assertEqual(decision["price_attractiveness"], "비교 유보")
 
+    def test_severely_negative_fcf_blocks_buy_despite_high_score(self):
+        item = dict(self.candidate)
+        item["detail"] = {**self.candidate["detail"], "fcf_yield_pct": -12}
+        result = evaluate_candidate(item, {"code":"neutral"})
+        self.assertEqual(result["action_v5"], "조건부 진입 대기")
+        self.assertTrue(any("잉여현금흐름" in x for x in result["decision_reasons"]))
+        self.assertEqual(result["thesis_confidence"], "가설 검증 전")
+
     def test_unknown_market_never_buy_now(self):
         result=evaluate_candidate(self.candidate,{"code":"unknown"})
         self.assertNotEqual(result["action_v5"],"분할 매수 검토")
