@@ -22,6 +22,9 @@ from v3_market_data import collect_snapshot
 from v4_discovery import (discovery_universe, unique_events, load_tracking,
                           tracking_changes, next_tracking, diversify_candidates, TRACKING_PATH)
 from v4_email import make_digest
+from v5_email import render_v5
+from v5_decision import (classify_market, allocation, build_decisions,
+                          observed_performance, update_history)
 from v4_deep_research import research_candidates
 from v4_saveticker import collect_saveticker
 from summarize import _call as claude_call
@@ -29,6 +32,7 @@ from v4_community import (load_seen as load_community_seen, collect_public_signa
                           STATE_FILE as COMMUNITY_STATE_FILE)
 
 STATE_PATH = Path("v3_delivery_state.json")
+V5_HISTORY = Path("v5_history.json")
 REPORT_DIR = Path("reports")
 ADDITIONAL_FEEDS = [
     {"name": "Global Rates and Gold", "market": "US",
@@ -168,14 +172,33 @@ def make_email():
         }
     # Always replace, even on provider failure; never use stale prior snapshot.
     snapshot_path.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2), encoding="utf-8")
-    regime, candidates = research_snapshot(str(snapshot_path))
-    candidates = diversify_candidates(candidates, count=3)
+    regime, raw_candidates = research_snapshot(str(snapshot_path))
+    try:
+        v5_old = json.loads(V5_HISTORY.read_text(encoding="utf-8"))
+        if not isinstance(v5_old, dict):
+            v5_old = {}
+    except (OSError, ValueError):
+        v5_old = {}
+    market = classify_market(snapshot)
+    allocation_model = allocation(market, v5_old.get("last_allocation"))
+    candidates, all_decisions = build_decisions(snapshot, market, raw_candidates, v5_old)
     candidates = research_candidates(
         candidates, save_articles[:5] + picks,
         community.get("items", []), claude_call)
-    changes = tracking_changes(snapshot, old)
-    date_str, html = make_digest(picks, snapshot, regime, candidates, changes, community=community)
+    historical_results = observed_performance(v5_old, snapshot)
+    next_history, changes = update_history(
+        v5_old, all_decisions, snapshot, market, allocation_model,
+        now=datetime.now(KST))
+    # The history is staged separately. Only a successful SMTP send commits it.
+    (REPORT_DIR / "v5_history_next.json").write_text(
+        json.dumps(next_history, ensure_ascii=False, indent=2), encoding="utf-8")
+    date_str, html = render_v5(
+        picks, snapshot, market, allocation_model, candidates, all_decisions,
+        community, historical_results, changes, datetime.now(KST))
     ledger = next_tracking(snapshot, old)
+    print(f"[info] V5 국면 {market['label']}, 배분 {allocation_model['status']}, 매수 검토 "
+          f"{sum(c['action_v5']=='분할 매수 검토' for c in candidates)}개, "
+          f"추적 기록 {len(next_history['observations'])}건")
     return date_str, html, seen, sent_uids, len(picks), len(candidates), ledger, community["next_seen"]
 
 
@@ -218,7 +241,7 @@ def main():
 
     # SMTP succeeds BEFORE either dedup cache is persisted.
     subject_tag = "업데이트판 · " if args.send_revision else ""
-    send(f"📊 Stock Brief v4.2 · {subject_tag}{date_str} | 후보 {picks_count} · 뉴스 {news_count}", html)
+    send(f"📊 STOCK BRIEF V5 · {subject_tag}{date_str} | 판단 후보 {picks_count} · 뉴스 {news_count}", html)
     print(f"[info] 이메일 발송 성공 → {MAIL_TO}")
     seen.update(sent_uids)
     save_seen(seen)
@@ -230,6 +253,11 @@ def main():
     community_tmp = community_path.with_suffix(".tmp")
     community_tmp.write_text(json.dumps(community_state, ensure_ascii=False, indent=2), encoding="utf-8")
     community_tmp.replace(community_path)
+    staged = REPORT_DIR / "v5_history_next.json"
+    if staged.exists():
+        tmp = V5_HISTORY.with_suffix(".tmp")
+        tmp.write_bytes(staged.read_bytes())
+        tmp.replace(V5_HISTORY)
     if args.send_revision:
         state["revision_sent_dates"] = list(dict.fromkeys(
             [*state.get("revision_sent_dates", []), today]))[-45:]
