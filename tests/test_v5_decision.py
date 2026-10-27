@@ -70,7 +70,7 @@ class DecisionTests(unittest.TestCase):
 
     def test_track_buy_wait_and_excess_return(self):
         s=self.snapshot
-        s["assets"]["XYZ"]={"market":{"price":220}}
+        s["assets"]["XYZ"]={"market":{"price":200}}
         risk=classify_market(s,self.now)
         decisions,all_decisions=build_decisions(s,risk,[self.candidate])
         alloc=allocation(risk)
