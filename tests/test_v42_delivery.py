@@ -5,9 +5,10 @@ import main_v3
 
 class RevisionDeliveryTests(unittest.TestCase):
     def test_revision_dedup_is_distinct_from_normal_delivery(self):
-        recorded = {"sent_dates": ["2026-10-24"], "revision_sent_dates": []}
+        today = datetime.now(main_v3.KST).date().isoformat()
+        recorded = {"sent_dates": [today], "revision_sent_dates": []}
         with patch.object(main_v3, "_load_state", return_value=recorded), \
-             patch.object(main_v3, "make_email", return_value=("2026-10-24", "<html></html>", set(), [], 0, 0, {}, {"seen_ids":[]})), \
+             patch.object(main_v3, "make_email", return_value=(today, "<html></html>", set(), [], 0, 0, {}, {"seen_ids":[]})), \
              patch.object(main_v3, "send") as smtp, \
              patch.object(main_v3, "_save_state") as save_state, \
              patch.object(main_v3, "save_seen"), \
@@ -29,8 +30,8 @@ class RevisionDeliveryTests(unittest.TestCase):
                 finally:
                     chdir(old)
         smtp.assert_called_once()
-        self.assertIn("2026-10-24", save_state.call_args[0][0]["revision_sent_dates"])
-        self.assertEqual(save_state.call_args[0][0]["sent_dates"], ["2026-10-24"])
+        self.assertIn(today, save_state.call_args[0][0]["revision_sent_dates"])
+        self.assertEqual(save_state.call_args[0][0]["sent_dates"], [today])
 
 if __name__ == "__main__":
     unittest.main()
