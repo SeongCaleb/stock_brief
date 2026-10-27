@@ -63,6 +63,28 @@ class DecisionTests(unittest.TestCase):
         self.assertTrue(all(abs(v-neutral[k])<=5 for k,v in alloc["weights"].items()))
         self.assertFalse(alloc["investable"])
 
+    def test_high_yields_and_index_concentration_block_full_risk_on(self):
+        self.snapshot["macro"]["vix"]["value"] = 19.4
+        self.snapshot["macro"]["high_yield_spread_pct"]["value"] = 3.38
+        self.snapshot["macro"]["us_10y_yield_pct"]["value"] = 5.0
+        self.snapshot["asset_classes"].append({
+            "ticker": "RSP", "price": 100, "return_3m_pct": .2,
+            "as_of": "2026-10-26T00:00:00+00:00"
+        })
+        regime = classify_market(self.snapshot, self.now)
+        self.assertEqual(regime["code"], "neutral")
+        self.assertTrue(any("동일가중" in x for x in regime["reasons"]))
+
+    def test_pe_growth_anomaly_is_conditional_and_not_cheap(self):
+        item = dict(self.candidate)
+        item["valuation_info"] = {
+            "forward_pe": 13.6, "peer_forward_pe_median": None,
+            "expected_earnings_growth_pct": 70.9,
+        }
+        decision = evaluate_candidate(item, {"code":"neutral"})
+        self.assertEqual(decision["action_v5"], "조건부 진입 대기")
+        self.assertEqual(decision["price_attractiveness"], "비교 유보")
+
     def test_unknown_market_never_buy_now(self):
         result=evaluate_candidate(self.candidate,{"code":"unknown"})
         self.assertNotEqual(result["action_v5"],"분할 매수 검토")
