@@ -1,4 +1,4 @@
-name: Stock Brief v4 Daily Email
+name: Stock Brief V5 Daily Email
 on:
   schedule:
     - cron: "30 23 * * *" # 08:30 Asia/Seoul, may be delayed by GitHub
@@ -30,7 +30,7 @@ jobs:
           python-version: "3.11"
       - name: Install dependencies
         run: pip install -r requirements.txt
-      - name: Run Stock Brief v4
+      - name: Run Stock Brief V5
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           NAVER_USER: ${{ secrets.NAVER_USER }}
@@ -60,6 +60,7 @@ jobs:
             reports/latest.html
             reports/market_snapshot.json
             reports/community_sources.json
+            reports/v5_history_next.json
           if-no-files-found: ignore
           retention-days: 7
       - name: Persist delivered state
@@ -69,7 +70,7 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add seen.json v3_delivery_state.json v4_thesis_history.json v4_community_seen.json
+          git add seen.json v3_delivery_state.json v4_thesis_history.json v4_community_seen.json v5_history.json
           if ! git diff --cached --quiet; then
             git commit -m "chore: record delivered v4 brief [skip ci]"
             git pull --rebase origin main
