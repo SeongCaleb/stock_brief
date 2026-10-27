@@ -10,6 +10,8 @@ on:
       - 'v4_community.py'
       - 'v4_saveticker.py'
       - 'v4_deep_research.py'
+      - 'v5_decision.py'
+      - 'v5_email.py'
       - 'tests/**'
       - '.github/workflows/**'
   workflow_dispatch:
