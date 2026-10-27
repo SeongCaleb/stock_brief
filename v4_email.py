@@ -138,7 +138,7 @@ def _asset_table(snapshot):
     values = snapshot.get("asset_classes") or []
     if not values:
         return "<p style='font-size:12px'>자산군 데이터 수집 실패</p>"
-    heads = ["VOO", "QQQM", "RSP", "VXUS", "SHY", "IEF", "TLT", "IAU"]
+    heads = ["VOO", "QQQM", "RSP", "VXUS", "SHY", "SGOV", "IEF", "TLT", "IAU"]
     lookup = {v.get("ticker"): v for v in values}
     rows = []
     for ticker in heads:
