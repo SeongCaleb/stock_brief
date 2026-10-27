@@ -1,0 +1,68 @@
+name: Stock Brief V5 One-Time Validation and Email
+on:
+  push:
+    paths:
+      - ".github/v5-preview-trigger.txt"
+      - ".github/v5-send-trigger.txt"
+permissions:
+  contents: write
+concurrency:
+  group: stock-brief-daily
+  cancel-in-progress: false
+jobs:
+  run-v5:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r requirements.txt
+      - name: Generate preview or send one requested revised email
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          NAVER_USER: ${{ secrets.NAVER_USER }}
+          NAVER_PASS: ${{ secrets.NAVER_PASS }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
+          ANTHROPIC_MODEL: ${{ vars.ANTHROPIC_MODEL }}
+          MAX_ARTICLES: ${{ vars.MAX_ARTICLES }}
+          SEC_USER_AGENT: ${{ vars.SEC_USER_AGENT }}
+          STOCK_WATCHLIST: ${{ vars.STOCK_WATCHLIST }}
+          DISCOVERY_LIMIT: "18"
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git show --format= --name-only HEAD | grep -qx '.github/v5-send-trigger.txt'; then
+            python main_v3.py --send-revision
+            echo "DID_SEND=true" >> "$GITHUB_ENV"
+          else
+            python main_v3.py --preview
+          fi
+      - name: Preserve report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: stock-brief-v5-${{ github.run_id }}
+          path: |
+            reports/latest.html
+            reports/market_snapshot.json
+            reports/community_sources.json
+            reports/v5_history_next.json
+          retention-days: 7
+          if-no-files-found: ignore
+      - name: Persist delivered decisions
+        if: success() && env.DID_SEND == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add seen.json v3_delivery_state.json v4_thesis_history.json v4_community_seen.json v5_history.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: record V5 email decision history [skip ci]"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
