@@ -71,6 +71,18 @@ def classify_market(snapshot, now=None):
         context.append(f"10년 국채 {rate10:.2f}%")
     if trend is not None:
         context.append(f"SPY 200일선 대비 {trend:+.1f}%")
+    # Equal-weight vs capitalization-weight S&P 500 is a concentration proxy,
+    # not a direct measure of advance/decline market breadth.
+    comparison = {x.get("ticker"): x for x in (snapshot.get("asset_classes") or [])}
+    voo, rsp = comparison.get("VOO", {}), comparison.get("RSP", {})
+    narrow = False
+    if fresh(voo, now=now) and fresh(rsp, now=now):
+        voo_r3, rsp_r3 = num(voo.get("return_3m_pct")), num(rsp.get("return_3m_pct"))
+        if voo_r3 is not None and rsp_r3 is not None:
+            gap = rsp_r3 - voo_r3
+            context.append(f"동일가중-시총가중 3개월 격차 {gap:+.1f}%p(집중도 대용)")
+            narrow = gap <= -3
+    rate_pressure = rate10 is not None and rate10 >= 4.7
     if observed < 3 or vix is None or spread is None:
         return {
             "code": "unknown", "label": "시장 판단 유보", "observed": observed,
@@ -83,10 +95,12 @@ def classify_market(snapshot, now=None):
         code, label = "stress", "시장 스트레스 · 방어 우선"
     elif warnings >= 2:
         code, label = "risk_off", "위험 회피 · 신규 진입 축소"
-    elif vix <= 20 and spread <= 3.5 and trend is not None and trend >= 2:
+    elif vix <= 20 and spread <= 3.5 and trend is not None and trend >= 2 and not narrow and not rate_pressure:
         code, label = "risk_on", "위험 선호 · 선별 진입 확대 검토"
     else:
         code, label = "neutral", "중립 · 분할 진입"
+    if narrow or rate_pressure:
+        context.append("상승 집중 또는 높은 자금조달 금리 부담 존재")
     return {
         "code": code, "label": label, "observed": observed,
         "reasons": context, "missing": "시장 참여 폭·기업 이익 전망의 직접 측정 없음",
@@ -201,7 +215,9 @@ def evaluate_candidate(candidate, market):
     coverage = sum((growth_ok, val_ok, fcf_ok or margin_ok, catalyst_ok, trend_ok))
     evidence = "높음" if coverage >= 5 else "보통" if coverage >= 3 else "제한적"
     data_reliability = "벤더 참고" if coverage >= 3 else "자료 제한"
-    price_attractiveness = "유리" if buckets["valuation"] >= 14 else "부담" if buckets["valuation"] <= 6 else "중립"
+    price_attractiveness = ("비교 유보" if peer is None else
+                            "유리" if buckets["valuation"] >= 14 else
+                            "부담" if buckets["valuation"] <= 6 else "중립")
     reasons = []
     if coverage < 3:
         action = "대기"; reasons.append("핵심 가격·실적·현금흐름 지표 부족")
@@ -211,7 +227,13 @@ def evaluate_candidate(candidate, market):
         action = "제외"; reasons.append("예상 이익 감소와 높은 선행 PER 동시 발생")
     elif risk_count >= 2:
         action = "대기"; reasons.append("고평가·과열 경고 복수")
-    elif score >= 68 and coverage >= 4 and market["code"] not in ("unknown", "risk_off"):
+    elif pe is not None and peer is None and growth is not None and growth >= 50 and pe < 18:
+        action = "조건부 진입 대기"; reasons.append("고성장·저PER 조합의 이익 예상기간 및 공급업체 추정 기준 재확인")
+    elif r3 is not None and r3 < -15:
+        action = "조건부 진입 대기"; reasons.append("3개월 급락에 따른 하락 추세·실적 원인 확인")
+    elif market["code"] in ("risk_off", "unknown"):
+        action = "조건부 진입 대기"; reasons.append("시장 환경과 근거 확인 후 판단")
+    elif score >= 68 and coverage >= 4:
         action = "분할 매수 검토"; reasons.append("상대적으로 양호한 성장·가격·재무 조건")
     elif score >= 45:
         action = "조건부 진입 대기"; reasons.append("가격/가설 확인 조건 필요")
