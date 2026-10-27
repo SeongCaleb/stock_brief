@@ -24,7 +24,7 @@ def candidate_html(c, i):
         f"근거 {e(c.get('data_reliability'))} · 가설 확신 {e(c.get('thesis_confidence'))}"
         f" · 가격 매력도 {e(c.get('price_attractiveness'))} · {e(c.get('quote_date'))}</div>"
         f"<div style='font-size:12px;margin:7px 0'>현재 가격 USD {n(m.get('price'))} · "
-        f"선행 P/E {n(v.get('forward_pe'),'배')} · 추정 EPS 성장 {n(v.get('expected_earnings_growth_pct'),'%')} · "
+        f"선행 P/E {n(v.get('forward_pe'),'배')} · 다음 회계연도 추정 EPS 성장 {n(v.get('expected_earnings_growth_pct'),'%')} · "
         f"FCF 수익률 {n(d.get('fcf_yield_pct'),'%')} · 3개월 주가 {n(m.get('return_3m_pct'),'%')}</div>")
     deep = c.get("deep_dive") or {}
     text = "".join(
@@ -107,8 +107,12 @@ def render_v5(news, snapshot, market, alloc, candidates, all_decisions,
     for p in performance[:8]:
         excess = p.get("excess_pct")
         supplement = " · VOO 대비 " + str(excess) + "%p" if excess is not None else ""
+        high = p.get("observed_max_pct")
+        low = p.get("observed_min_pct")
+        range_text = (f" · 관찰 최고 {high:+.1f}% / 최저 {low:+.1f}%"
+                      if high is not None and low is not None else "")
         root += (f"<div style='font-size:12px'>{e(p['ticker'])} · {e(p.get('original_decision'))}"
-                 f" · 가격 변화 {p['price_return_pct']:+.1f}%" + e(supplement) + "</div>")
+                 f" · 가격 변화 {p['price_return_pct']:+.1f}%" + e(supplement) + e(range_text) + "</div>")
     for message in changes[:6]:
         root += f"<div style='font-size:12px;color:#b45309'>판단 변경: {e(message)}</div>"
     root += "<p style='font-size:11px'>가격 변화는 배당·환율·거래 비용과 실제 보유 여부를 제외한 관찰치입니다.</p>"
