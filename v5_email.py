@@ -93,6 +93,8 @@ def render_v5(news, snapshot, market, alloc, candidates, all_decisions,
     if news:
         for a in news[:5]:
             root += _html_item(a)
+            if str(a.get("source", "")).startswith("세이브티커"):
+                root += "<div style='font-size:11px;color:#92400e'>세이브티커 검색 색인 기반: 원 기사 본문·1차 발표 내용의 확인 여부는 별개입니다.</div>"
             root += "<div style='font-size:11px;color:#64748b'>수혜 기업, 실적 반영 규모 및 주가 선반영 여부는 아직 정량 확인되지 않았습니다.</div>"
     else:
         root += "<p style='font-size:12px'>새로운 중요 기사 없음 또는 접근 제한</p>"
