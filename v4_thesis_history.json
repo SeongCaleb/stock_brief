@@ -92,9 +92,9 @@
       "source": "https://finance.yahoo.com/quote/CRM"
     },
     "GOOGL": {
-      "date": "2026-10-26",
-      "price": 320.21,
-      "forward_pe": 20.84885,
+      "date": "2026-10-27",
+      "price": 316.8,
+      "forward_pe": 20.626825,
       "growth_estimate_pct": -26.61,
       "source": "https://finance.yahoo.com/quote/GOOGL"
     },
@@ -176,10 +176,10 @@
       "source": "https://finance.yahoo.com/quote/AAPL"
     },
     "MSFT": {
-      "date": "2026-10-26",
-      "price": 524.51,
-      "forward_pe": 22.128946,
-      "growth_estimate_pct": 19.95,
+      "date": "2026-10-27",
+      "price": 532.6,
+      "forward_pe": 22.482325,
+      "growth_estimate_pct": 19.89,
       "source": "https://finance.yahoo.com/quote/MSFT"
     },
     "META": {
@@ -253,10 +253,10 @@
       "source": "https://finance.yahoo.com/quote/PLD"
     },
     "AMZN": {
-      "date": "2026-10-26",
-      "price": 248.0,
-      "forward_pe": 23.777382,
-      "growth_estimate_pct": -18.19,
+      "date": "2026-10-27",
+      "price": 249.09,
+      "forward_pe": 23.881886,
+      "growth_estimate_pct": -18.34,
       "source": "https://finance.yahoo.com/quote/AMZN"
     },
     "NFLX": {
