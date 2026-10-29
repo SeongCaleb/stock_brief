@@ -300,9 +300,189 @@
       "voo_price": 707.52,
       "score": 29,
       "reason": "기대 수익 대비 불확실성 또는 가격 부담"
+    },
+    {
+      "date": "2026-10-29",
+      "ticker": "TMUS",
+      "action": "분할 매수 검토",
+      "price": 148.08,
+      "price_as_of": "2026-10-28",
+      "voo_price": 709.9,
+      "score": 80,
+      "reason": "상대적으로 양호한 성장·가격·재무 조건"
+    },
+    {
+      "date": "2026-10-29",
+      "ticker": "NEM",
+      "action": "분할 매수 검토",
+      "price": 113.92,
+      "price_as_of": "2026-10-28",
+      "voo_price": 709.9,
+      "score": 75,
+      "reason": "상대적으로 양호한 성장·가격·재무 조건"
+    },
+    {
+      "date": "2026-10-29",
+      "ticker": "ABBV",
+      "action": "분할 매수 검토",
+      "price": 285.99,
+      "price_as_of": "2026-10-28",
+      "voo_price": 709.9,
+      "score": 73,
+      "reason": "상대적으로 양호한 성장·가격·재무 조건"
+    },
+    {
+      "date": "2026-10-29",
+      "ticker": "ADBE",
+      "action": "분할 매수 검토",
+      "price": 249.76,
+      "price_as_of": "2026-10-28",
+      "voo_price": 709.9,
+      "score": 71,
+      "reason": "상대적으로 양호한 성장·가격·재무 조건"
+    },
+    {
+      "date": "2026-10-29",
+      "ticker": "ORCL",
+      "action": "조건부 진입 대기",
+      "price": 144.54,
+      "price_as_of": "2026-10-28",
+      "voo_price": 709.9,
+      "score": 82,
+      "reason": "큰 폭의 잉여현금흐름 적자: 자본지출·차입부담 회복 확인 전 적극 매수 보류"
+    },
+    {
+      "date": "2026-10-29",
+      "ticker": "BKNG",
+      "action": "조건부 진입 대기",
+      "price": 147.94,
+      "price_as_of": "2026-10-28",
+      "voo_price": 709.9,
+      "score": 72,
+      "reason": "3개월 급락에 따른 하락 추세·실적 원인 확인"
+    },
+    {
+      "date": "2026-10-29",
+      "ticker": "MSFT",
+      "action": "조건부 진입 대기",
+      "price": 531.01,
+      "price_as_of": "2026-10-28",
+      "voo_price": 709.9,
+      "score": 66,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-10-29",
+      "ticker": "DIS",
+      "action": "조건부 진입 대기",
+      "price": 109.04,
+      "price_as_of": "2026-10-28",
+      "voo_price": 709.9,
+      "score": 65,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-10-29",
+      "ticker": "ETN",
+      "action": "조건부 진입 대기",
+      "price": 392.88,
+      "price_as_of": "2026-10-28",
+      "voo_price": 709.9,
+      "score": 64,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-10-29",
+      "ticker": "GIL",
+      "action": "조건부 진입 대기",
+      "price": 39.9,
+      "price_as_of": "2026-10-28",
+      "voo_price": 709.9,
+      "score": 55,
+      "reason": "큰 폭의 잉여현금흐름 적자: 자본지출·차입부담 회복 확인 전 적극 매수 보류"
+    },
+    {
+      "date": "2026-10-29",
+      "ticker": "SO",
+      "action": "조건부 진입 대기",
+      "price": 91.52,
+      "price_as_of": "2026-10-28",
+      "voo_price": 709.9,
+      "score": 54,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-10-29",
+      "ticker": "GS",
+      "action": "조건부 진입 대기",
+      "price": 925.17,
+      "price_as_of": "2026-10-28",
+      "voo_price": 709.9,
+      "score": 51,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-10-29",
+      "ticker": "AMZN",
+      "action": "대기",
+      "price": 254.6,
+      "price_as_of": "2026-10-28T00:00:00+00:00",
+      "voo_price": 709.9,
+      "score": null,
+      "reason": "가격 또는 최소 실적 지표 수집 실패"
+    },
+    {
+      "date": "2026-10-29",
+      "ticker": "PG",
+      "action": "대기",
+      "price": 158.26,
+      "price_as_of": "2026-10-28T00:00:00+00:00",
+      "voo_price": 709.9,
+      "score": null,
+      "reason": "가격 또는 최소 실적 지표 수집 실패"
+    },
+    {
+      "date": "2026-10-29",
+      "ticker": "XOM",
+      "action": "대기",
+      "price": 182.02,
+      "price_as_of": "2026-10-28T00:00:00+00:00",
+      "voo_price": 709.9,
+      "score": null,
+      "reason": "가격 또는 최소 실적 지표 수집 실패"
+    },
+    {
+      "date": "2026-10-29",
+      "ticker": "O",
+      "action": "대기",
+      "price": 56.23,
+      "price_as_of": "2026-10-28T00:00:00+00:00",
+      "voo_price": 709.9,
+      "score": null,
+      "reason": "가격 또는 최소 실적 지표 수집 실패"
+    },
+    {
+      "date": "2026-10-29",
+      "ticker": "GRNI",
+      "action": "대기",
+      "price": 20.897,
+      "price_as_of": "2026-10-28T00:00:00+00:00",
+      "voo_price": 709.9,
+      "score": null,
+      "reason": "가격 또는 최소 실적 지표 수집 실패"
+    },
+    {
+      "date": "2026-10-29",
+      "ticker": "GOOGL",
+      "action": "대기",
+      "price": 324.89,
+      "price_as_of": "2026-10-28T00:00:00+00:00",
+      "voo_price": 709.9,
+      "score": null,
+      "reason": "가격 또는 최소 실적 지표 수집 실패"
     }
   ],
-  "last_updated": "2026-10-28",
+  "last_updated": "2026-10-29",
   "last_allocation": {
     "cash_short": 45,
     "us_index": 25,
