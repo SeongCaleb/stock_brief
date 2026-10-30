@@ -480,9 +480,159 @@
       "voo_price": 709.9,
       "score": null,
       "reason": "가격 또는 최소 실적 지표 수집 실패"
+    },
+    {
+      "date": "2026-10-30",
+      "ticker": "FCX",
+      "action": "분할 매수 검토",
+      "price": 66.14,
+      "price_as_of": "2026-10-29",
+      "voo_price": 707.32,
+      "score": 85,
+      "reason": "상대적으로 양호한 성장·가격·재무 조건"
+    },
+    {
+      "date": "2026-10-30",
+      "ticker": "LLY",
+      "action": "분할 매수 검토",
+      "price": 1373.7,
+      "price_as_of": "2026-10-29",
+      "voo_price": 707.32,
+      "score": 79,
+      "reason": "상대적으로 양호한 성장·가격·재무 조건"
+    },
+    {
+      "date": "2026-10-30",
+      "ticker": "TMUS",
+      "action": "분할 매수 검토",
+      "price": 147.29,
+      "price_as_of": "2026-10-29",
+      "voo_price": 707.32,
+      "score": 79,
+      "reason": "상대적으로 양호한 성장·가격·재무 조건"
+    },
+    {
+      "date": "2026-10-30",
+      "ticker": "ORCL",
+      "action": "조건부 진입 대기",
+      "price": 139.56,
+      "price_as_of": "2026-10-29",
+      "voo_price": 707.32,
+      "score": 80,
+      "reason": "큰 폭의 잉여현금흐름 적자: 자본지출·차입부담 회복 확인 전 적극 매수 보류"
+    },
+    {
+      "date": "2026-10-30",
+      "ticker": "BKNG",
+      "action": "조건부 진입 대기",
+      "price": 150.43,
+      "price_as_of": "2026-10-29",
+      "voo_price": 707.32,
+      "score": 72,
+      "reason": "3개월 급락에 따른 하락 추세·실적 원인 확인"
+    },
+    {
+      "date": "2026-10-30",
+      "ticker": "MSFT",
+      "action": "조건부 진입 대기",
+      "price": 530.14,
+      "price_as_of": "2026-10-29",
+      "voo_price": 707.32,
+      "score": 63,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-10-30",
+      "ticker": "CAT",
+      "action": "조건부 진입 대기",
+      "price": 647.39,
+      "price_as_of": "2026-10-29",
+      "voo_price": 707.32,
+      "score": 61,
+      "reason": "3개월 급락에 따른 하락 추세·실적 원인 확인"
+    },
+    {
+      "date": "2026-10-30",
+      "ticker": "CRM",
+      "action": "조건부 진입 대기",
+      "price": 230.9,
+      "price_as_of": "2026-10-29",
+      "voo_price": 707.32,
+      "score": 61,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-10-30",
+      "ticker": "BLK",
+      "action": "조건부 진입 대기",
+      "price": 1176.24,
+      "price_as_of": "2026-10-29",
+      "voo_price": 707.32,
+      "score": 59,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-10-30",
+      "ticker": "KO",
+      "action": "조건부 진입 대기",
+      "price": 92.82,
+      "price_as_of": "2026-10-29",
+      "voo_price": 707.32,
+      "score": 53,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-10-30",
+      "ticker": "CVX",
+      "action": "조건부 진입 대기",
+      "price": 231.46,
+      "price_as_of": "2026-10-29",
+      "voo_price": 707.32,
+      "score": 53,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-10-30",
+      "ticker": "CEG",
+      "action": "조건부 진입 대기",
+      "price": 264.58,
+      "price_as_of": "2026-10-29",
+      "voo_price": 707.32,
+      "score": 50,
+      "reason": "큰 폭의 잉여현금흐름 적자: 자본지출·차입부담 회복 확인 전 적극 매수 보류"
+    },
+    {
+      "date": "2026-10-30",
+      "ticker": "GOOGL",
+      "action": "대기",
+      "price": 283.82,
+      "price_as_of": "2026-10-29T00:00:00+00:00",
+      "voo_price": 707.32,
+      "score": null,
+      "reason": "가격 또는 최소 실적 지표 수집 실패"
+    },
+    {
+      "date": "2026-10-30",
+      "ticker": "TSLA",
+      "action": "대기",
+      "price": 403.3,
+      "price_as_of": "2026-10-29T00:00:00+00:00",
+      "voo_price": 707.32,
+      "score": null,
+      "reason": "가격 또는 최소 실적 지표 수집 실패"
+    },
+    {
+      "date": "2026-10-30",
+      "ticker": "WELL",
+      "action": "대기",
+      "price": 233.17,
+      "price_as_of": "2026-10-29T00:00:00+00:00",
+      "voo_price": 707.32,
+      "score": null,
+      "reason": "가격 또는 최소 실적 지표 수집 실패"
     }
   ],
-  "last_updated": "2026-10-29",
+  "last_updated": "2026-10-30",
   "last_allocation": {
     "cash_short": 45,
     "us_index": 25,
