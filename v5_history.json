@@ -630,9 +630,169 @@
       "voo_price": 707.32,
       "score": null,
       "reason": "가격 또는 최소 실적 지표 수집 실패"
+    },
+    {
+      "date": "2026-10-31",
+      "ticker": "CART",
+      "action": "분할 매수 검토",
+      "price": 56.45,
+      "price_as_of": "2026-10-30",
+      "voo_price": 694.81,
+      "score": 85,
+      "reason": "상대적으로 양호한 성장·가격·재무 조건"
+    },
+    {
+      "date": "2026-10-31",
+      "ticker": "TMUS",
+      "action": "분할 매수 검토",
+      "price": 156.44,
+      "price_as_of": "2026-10-30",
+      "voo_price": 694.81,
+      "score": 79,
+      "reason": "상대적으로 양호한 성장·가격·재무 조건"
+    },
+    {
+      "date": "2026-10-31",
+      "ticker": "SLB",
+      "action": "분할 매수 검토",
+      "price": 53.74,
+      "price_as_of": "2026-10-30",
+      "voo_price": 694.81,
+      "score": 77,
+      "reason": "상대적으로 양호한 성장·가격·재무 조건"
+    },
+    {
+      "date": "2026-10-31",
+      "ticker": "META",
+      "action": "분할 매수 검토",
+      "price": 614.99,
+      "price_as_of": "2026-10-30",
+      "voo_price": 694.81,
+      "score": 69,
+      "reason": "상대적으로 양호한 성장·가격·재무 조건"
+    },
+    {
+      "date": "2026-10-31",
+      "ticker": "ORCL",
+      "action": "조건부 진입 대기",
+      "price": 130.67,
+      "price_as_of": "2026-10-30",
+      "voo_price": 694.81,
+      "score": 76,
+      "reason": "큰 폭의 잉여현금흐름 적자: 자본지출·차입부담 회복 확인 전 적극 매수 보류"
+    },
+    {
+      "date": "2026-10-31",
+      "ticker": "BKNG",
+      "action": "조건부 진입 대기",
+      "price": 148.13,
+      "price_as_of": "2026-10-30",
+      "voo_price": 694.81,
+      "score": 72,
+      "reason": "3개월 급락에 따른 하락 추세·실적 원인 확인"
+    },
+    {
+      "date": "2026-10-31",
+      "ticker": "INTC",
+      "action": "조건부 진입 대기",
+      "price": 65.76,
+      "price_as_of": "2026-10-30",
+      "voo_price": 694.81,
+      "score": 63,
+      "reason": "3개월 급락에 따른 하락 추세·실적 원인 확인"
+    },
+    {
+      "date": "2026-10-31",
+      "ticker": "MSFT",
+      "action": "조건부 진입 대기",
+      "price": 521.91,
+      "price_as_of": "2026-10-30",
+      "voo_price": 694.81,
+      "score": 61,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-10-31",
+      "ticker": "VST",
+      "action": "조건부 진입 대기",
+      "price": 138.37,
+      "price_as_of": "2026-10-30",
+      "voo_price": 694.81,
+      "score": 56,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-10-31",
+      "ticker": "SHW",
+      "action": "조건부 진입 대기",
+      "price": 332.61,
+      "price_as_of": "2026-10-30",
+      "voo_price": 694.81,
+      "score": 54,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-10-31",
+      "ticker": "JPM",
+      "action": "조건부 진입 대기",
+      "price": 337.04,
+      "price_as_of": "2026-10-30",
+      "voo_price": 694.81,
+      "score": 53,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-10-31",
+      "ticker": "GE",
+      "action": "조건부 진입 대기",
+      "price": 301.8,
+      "price_as_of": "2026-10-30",
+      "voo_price": 694.81,
+      "score": 47,
+      "reason": "3개월 급락에 따른 하락 추세·실적 원인 확인"
+    },
+    {
+      "date": "2026-10-31",
+      "ticker": "HD",
+      "action": "대기",
+      "price": 329.2,
+      "price_as_of": "2026-10-30T00:00:00+00:00",
+      "voo_price": 694.81,
+      "score": null,
+      "reason": "가격 또는 최소 실적 지표 수집 실패"
+    },
+    {
+      "date": "2026-10-31",
+      "ticker": "WMT",
+      "action": "대기",
+      "price": 123.51,
+      "price_as_of": "2026-10-30T00:00:00+00:00",
+      "voo_price": 694.81,
+      "score": null,
+      "reason": "가격 또는 최소 실적 지표 수집 실패"
+    },
+    {
+      "date": "2026-10-31",
+      "ticker": "ISRG",
+      "action": "대기",
+      "price": 432.01,
+      "price_as_of": "2026-10-30T00:00:00+00:00",
+      "voo_price": 694.81,
+      "score": null,
+      "reason": "가격 또는 최소 실적 지표 수집 실패"
+    },
+    {
+      "date": "2026-10-31",
+      "ticker": "PLD",
+      "action": "대기",
+      "price": 127.98,
+      "price_as_of": "2026-10-30T00:00:00+00:00",
+      "voo_price": 694.81,
+      "score": null,
+      "reason": "가격 또는 최소 실적 지표 수집 실패"
     }
   ],
-  "last_updated": "2026-10-30",
+  "last_updated": "2026-10-31",
   "last_allocation": {
     "cash_short": 45,
     "us_index": 25,
