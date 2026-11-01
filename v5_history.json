@@ -790,9 +790,179 @@
       "voo_price": 694.81,
       "score": null,
       "reason": "가격 또는 최소 실적 지표 수집 실패"
+    },
+    {
+      "date": "2026-11-01",
+      "ticker": "TMUS",
+      "action": "분할 매수 검토",
+      "price": 156.44,
+      "price_as_of": "2026-10-30",
+      "voo_price": 694.81,
+      "score": 79,
+      "reason": "상대적으로 양호한 성장·가격·재무 조건"
+    },
+    {
+      "date": "2026-11-01",
+      "ticker": "NVDA",
+      "action": "조건부 진입 대기",
+      "price": 204.64,
+      "price_as_of": "2026-10-30",
+      "voo_price": 694.81,
+      "score": 83,
+      "reason": "고성장·저PER 조합의 이익 예상기간 및 공급업체 추정 기준 재확인"
+    },
+    {
+      "date": "2026-11-01",
+      "ticker": "ORCL",
+      "action": "조건부 진입 대기",
+      "price": 130.67,
+      "price_as_of": "2026-10-30",
+      "voo_price": 694.81,
+      "score": 76,
+      "reason": "큰 폭의 잉여현금흐름 적자: 자본지출·차입부담 회복 확인 전 적극 매수 보류"
+    },
+    {
+      "date": "2026-11-01",
+      "ticker": "BKNG",
+      "action": "조건부 진입 대기",
+      "price": 148.13,
+      "price_as_of": "2026-10-30",
+      "voo_price": 694.81,
+      "score": 72,
+      "reason": "3개월 급락에 따른 하락 추세·실적 원인 확인"
+    },
+    {
+      "date": "2026-11-01",
+      "ticker": "HON",
+      "action": "조건부 진입 대기",
+      "price": 218.33,
+      "price_as_of": "2026-10-30",
+      "voo_price": 694.81,
+      "score": 65,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-11-01",
+      "ticker": "INTC",
+      "action": "조건부 진입 대기",
+      "price": 65.76,
+      "price_as_of": "2026-10-30",
+      "voo_price": 694.81,
+      "score": 61,
+      "reason": "3개월 급락에 따른 하락 추세·실적 원인 확인"
+    },
+    {
+      "date": "2026-11-01",
+      "ticker": "MSFT",
+      "action": "조건부 진입 대기",
+      "price": 521.91,
+      "price_as_of": "2026-10-30",
+      "voo_price": 694.81,
+      "score": 61,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-11-01",
+      "ticker": "MCD",
+      "action": "조건부 진입 대기",
+      "price": 258.12,
+      "price_as_of": "2026-10-30",
+      "voo_price": 694.81,
+      "score": 60,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-11-01",
+      "ticker": "NFLX",
+      "action": "조건부 진입 대기",
+      "price": 62.08,
+      "price_as_of": "2026-10-30",
+      "voo_price": 694.81,
+      "score": 60,
+      "reason": "3개월 급락에 따른 하락 추세·실적 원인 확인"
+    },
+    {
+      "date": "2026-11-01",
+      "ticker": "V",
+      "action": "조건부 진입 대기",
+      "price": 413.59,
+      "price_as_of": "2026-10-30",
+      "voo_price": 694.81,
+      "score": 58,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-11-01",
+      "ticker": "APD",
+      "action": "조건부 진입 대기",
+      "price": 316.43,
+      "price_as_of": "2026-10-30",
+      "voo_price": 694.81,
+      "score": 54,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-11-01",
+      "ticker": "NEE",
+      "action": "조건부 진입 대기",
+      "price": 83.71,
+      "price_as_of": "2026-10-30",
+      "voo_price": 694.81,
+      "score": 53,
+      "reason": "큰 폭의 잉여현금흐름 적자: 자본지출·차입부담 회복 확인 전 적극 매수 보류"
+    },
+    {
+      "date": "2026-11-01",
+      "ticker": "PEP",
+      "action": "대기",
+      "price": 137.34,
+      "price_as_of": "2026-10-30T00:00:00+00:00",
+      "voo_price": 694.81,
+      "score": null,
+      "reason": "가격 또는 최소 실적 지표 수집 실패"
+    },
+    {
+      "date": "2026-11-01",
+      "ticker": "JNJ",
+      "action": "대기",
+      "price": 273.2,
+      "price_as_of": "2026-10-30T00:00:00+00:00",
+      "voo_price": 694.81,
+      "score": null,
+      "reason": "가격 또는 최소 실적 지표 수집 실패"
+    },
+    {
+      "date": "2026-11-01",
+      "ticker": "COP",
+      "action": "대기",
+      "price": 154.03,
+      "price_as_of": "2026-10-30T00:00:00+00:00",
+      "voo_price": 694.81,
+      "score": null,
+      "reason": "가격 또는 최소 실적 지표 수집 실패"
+    },
+    {
+      "date": "2026-11-01",
+      "ticker": "AMT",
+      "action": "대기",
+      "price": 187.78,
+      "price_as_of": "2026-10-30T00:00:00+00:00",
+      "voo_price": 694.81,
+      "score": null,
+      "reason": "가격 또는 최소 실적 지표 수집 실패"
+    },
+    {
+      "date": "2026-11-01",
+      "ticker": "TROO",
+      "action": "대기",
+      "price": 2.2,
+      "price_as_of": "2026-10-30T00:00:00+00:00",
+      "voo_price": 694.81,
+      "score": null,
+      "reason": "가격 또는 최소 실적 지표 수집 실패"
     }
   ],
-  "last_updated": "2026-10-31",
+  "last_updated": "2026-11-01",
   "last_allocation": {
     "cash_short": 45,
     "us_index": 25,
