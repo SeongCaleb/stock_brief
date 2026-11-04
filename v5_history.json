@@ -1230,9 +1230,179 @@
       "voo_price": 691.32,
       "score": null,
       "reason": "가격 또는 최소 실적 지표 수집 실패"
+    },
+    {
+      "date": "2026-11-04",
+      "ticker": "FCX",
+      "action": "분할 매수 검토",
+      "price": 61.77,
+      "price_as_of": "2026-11-03",
+      "voo_price": 693.54,
+      "score": 79,
+      "reason": "상대적으로 양호한 성장·가격·재무 조건"
+    },
+    {
+      "date": "2026-11-04",
+      "ticker": "TMUS",
+      "action": "분할 매수 검토",
+      "price": 154.41,
+      "price_as_of": "2026-11-03",
+      "voo_price": 693.54,
+      "score": 79,
+      "reason": "상대적으로 양호한 성장·가격·재무 조건"
+    },
+    {
+      "date": "2026-11-04",
+      "ticker": "LLY",
+      "action": "분할 매수 검토",
+      "price": 1409.38,
+      "price_as_of": "2026-11-03",
+      "voo_price": 693.54,
+      "score": 78,
+      "reason": "상대적으로 양호한 성장·가격·재무 조건"
+    },
+    {
+      "date": "2026-11-04",
+      "ticker": "AMD",
+      "action": "분할 매수 검토",
+      "price": 483.9,
+      "price_as_of": "2026-11-03",
+      "voo_price": 693.54,
+      "score": 70,
+      "reason": "상대적으로 양호한 성장·가격·재무 조건"
+    },
+    {
+      "date": "2026-11-04",
+      "ticker": "ORCL",
+      "action": "조건부 진입 대기",
+      "price": 126.19,
+      "price_as_of": "2026-11-03",
+      "voo_price": 693.54,
+      "score": 75,
+      "reason": "큰 폭의 잉여현금흐름 적자: 자본지출·차입부담 회복 확인 전 적극 매수 보류"
+    },
+    {
+      "date": "2026-11-04",
+      "ticker": "BKNG",
+      "action": "조건부 진입 대기",
+      "price": 155.67,
+      "price_as_of": "2026-11-03",
+      "voo_price": 693.54,
+      "score": 71,
+      "reason": "3개월 급락에 따른 하락 추세·실적 원인 확인"
+    },
+    {
+      "date": "2026-11-04",
+      "ticker": "PLTR",
+      "action": "조건부 진입 대기",
+      "price": 175.4,
+      "price_as_of": "2026-11-03",
+      "voo_price": 693.54,
+      "score": 65,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-11-04",
+      "ticker": "AAPL",
+      "action": "조건부 진입 대기",
+      "price": 331.9,
+      "price_as_of": "2026-11-03",
+      "voo_price": 693.54,
+      "score": 63,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-11-04",
+      "ticker": "CAT",
+      "action": "조건부 진입 대기",
+      "price": 623.94,
+      "price_as_of": "2026-11-03",
+      "voo_price": 693.54,
+      "score": 59,
+      "reason": "3개월 급락에 따른 하락 추세·실적 원인 확인"
+    },
+    {
+      "date": "2026-11-04",
+      "ticker": "BLK",
+      "action": "조건부 진입 대기",
+      "price": 1161.3199,
+      "price_as_of": "2026-11-03",
+      "voo_price": 693.54,
+      "score": 58,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-11-04",
+      "ticker": "KO",
+      "action": "조건부 진입 대기",
+      "price": 94.8,
+      "price_as_of": "2026-11-03",
+      "voo_price": 693.54,
+      "score": 54,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-11-04",
+      "ticker": "CEG",
+      "action": "조건부 진입 대기",
+      "price": 263.4,
+      "price_as_of": "2026-11-03",
+      "voo_price": 693.54,
+      "score": 50,
+      "reason": "큰 폭의 잉여현금흐름 적자: 자본지출·차입부담 회복 확인 전 적극 매수 보류"
+    },
+    {
+      "date": "2026-11-04",
+      "ticker": "CRM",
+      "action": "대기",
+      "price": 222.2,
+      "price_as_of": "2026-11-03T00:00:00+00:00",
+      "voo_price": 693.54,
+      "score": null,
+      "reason": "가격 또는 최소 실적 지표 수집 실패"
+    },
+    {
+      "date": "2026-11-04",
+      "ticker": "GOOGL",
+      "action": "대기",
+      "price": 280.03,
+      "price_as_of": "2026-11-03T00:00:00+00:00",
+      "voo_price": 693.54,
+      "score": null,
+      "reason": "가격 또는 최소 실적 지표 수집 실패"
+    },
+    {
+      "date": "2026-11-04",
+      "ticker": "TSLA",
+      "action": "대기",
+      "price": 398.5,
+      "price_as_of": "2026-11-03T00:00:00+00:00",
+      "voo_price": 693.54,
+      "score": null,
+      "reason": "가격 또는 최소 실적 지표 수집 실패"
+    },
+    {
+      "date": "2026-11-04",
+      "ticker": "CVX",
+      "action": "대기",
+      "price": 225.27,
+      "price_as_of": "2026-11-03T00:00:00+00:00",
+      "voo_price": 693.54,
+      "score": null,
+      "reason": "가격 또는 최소 실적 지표 수집 실패"
+    },
+    {
+      "date": "2026-11-04",
+      "ticker": "WELL",
+      "action": "대기",
+      "price": 241.17,
+      "price_as_of": "2026-11-03T00:00:00+00:00",
+      "voo_price": 693.54,
+      "score": null,
+      "reason": "가격 또는 최소 실적 지표 수집 실패"
     }
   ],
-  "last_updated": "2026-11-03",
+  "last_updated": "2026-11-04",
   "last_allocation": {
     "cash_short": 45,
     "us_index": 25,
