@@ -1710,9 +1710,119 @@
       "voo_price": 673.97,
       "score": null,
       "reason": "가격 또는 최소 실적 지표 수집 실패"
+    },
+    {
+      "date": "2026-11-07",
+      "ticker": "TMUS",
+      "action": "분할 매수 검토",
+      "price": 162.01,
+      "price_as_of": "2026-11-06",
+      "voo_price": 675.99,
+      "score": 79,
+      "reason": "상대적으로 양호한 성장·가격·재무 조건"
+    },
+    {
+      "date": "2026-11-07",
+      "ticker": "ORCL",
+      "action": "조건부 진입 대기",
+      "price": 116.1,
+      "price_as_of": "2026-11-06",
+      "voo_price": 675.99,
+      "score": 73,
+      "reason": "큰 폭의 잉여현금흐름 적자: 자본지출·차입부담 회복 확인 전 적극 매수 보류"
+    },
+    {
+      "date": "2026-11-07",
+      "ticker": "BKNG",
+      "action": "조건부 진입 대기",
+      "price": 160.67,
+      "price_as_of": "2026-11-06",
+      "voo_price": 675.99,
+      "score": 71,
+      "reason": "3개월 급락에 따른 하락 추세·실적 원인 확인"
+    },
+    {
+      "date": "2026-11-07",
+      "ticker": "DE",
+      "action": "조건부 진입 대기",
+      "price": 671.65,
+      "price_as_of": "2026-11-06",
+      "voo_price": 675.99,
+      "score": 67,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-11-07",
+      "ticker": "UNH",
+      "action": "조건부 진입 대기",
+      "price": 394.15,
+      "price_as_of": "2026-11-06",
+      "voo_price": 675.99,
+      "score": 64,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-11-07",
+      "ticker": "LIN",
+      "action": "조건부 진입 대기",
+      "price": 515.25,
+      "price_as_of": "2026-11-06",
+      "voo_price": 675.99,
+      "score": 58,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-11-07",
+      "ticker": "EOG",
+      "action": "조건부 진입 대기",
+      "price": 147.13,
+      "price_as_of": "2026-11-06",
+      "voo_price": 675.99,
+      "score": 54,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-11-07",
+      "ticker": "DUK",
+      "action": "조건부 진입 대기",
+      "price": 127.78,
+      "price_as_of": "2026-11-06",
+      "voo_price": 675.99,
+      "score": 53,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-11-07",
+      "ticker": "EQIX",
+      "action": "대기",
+      "price": 1012.71,
+      "price_as_of": "2026-11-06",
+      "voo_price": 675.99,
+      "score": 44,
+      "reason": "기대 수익 대비 불확실성 또는 가격 부담"
+    },
+    {
+      "date": "2026-11-07",
+      "ticker": "COST",
+      "action": "대기",
+      "price": 1053.5601,
+      "price_as_of": "2026-11-06",
+      "voo_price": 675.99,
+      "score": 41,
+      "reason": "기대 수익 대비 불확실성 또는 가격 부담"
+    },
+    {
+      "date": "2026-11-07",
+      "ticker": "BRK-B",
+      "action": "대기",
+      "price": 570.89,
+      "price_as_of": "2026-11-06",
+      "voo_price": 675.99,
+      "score": 27,
+      "reason": "기대 수익 대비 불확실성 또는 가격 부담"
     }
   ],
-  "last_updated": "2026-11-06",
+  "last_updated": "2026-11-07",
   "last_allocation": {
     "cash_short": 45,
     "us_index": 25,
