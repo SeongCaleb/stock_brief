@@ -1950,9 +1950,159 @@
       "voo_price": 698.35,
       "score": null,
       "reason": "가격 또는 최소 실적 지표 수집 실패"
+    },
+    {
+      "date": "2026-11-13",
+      "ticker": "TMUS",
+      "action": "분할 매수 검토",
+      "price": 171.03,
+      "price_as_of": "2026-11-12",
+      "voo_price": 696.0,
+      "score": 80,
+      "reason": "상대적으로 양호한 성장·가격·재무 조건"
+    },
+    {
+      "date": "2026-11-13",
+      "ticker": "ABBV",
+      "action": "분할 매수 검토",
+      "price": 294.45,
+      "price_as_of": "2026-11-12",
+      "voo_price": 696.0,
+      "score": 73,
+      "reason": "상대적으로 양호한 성장·가격·재무 조건"
+    },
+    {
+      "date": "2026-11-13",
+      "ticker": "ADBE",
+      "action": "분할 매수 검토",
+      "price": 238.54,
+      "price_as_of": "2026-11-12",
+      "voo_price": 696.0,
+      "score": 69,
+      "reason": "상대적으로 양호한 성장·가격·재무 조건"
+    },
+    {
+      "date": "2026-11-13",
+      "ticker": "NEM",
+      "action": "분할 매수 검토",
+      "price": 112.64,
+      "price_as_of": "2026-11-12",
+      "voo_price": 696.0,
+      "score": 69,
+      "reason": "상대적으로 양호한 성장·가격·재무 조건"
+    },
+    {
+      "date": "2026-11-13",
+      "ticker": "NVDA",
+      "action": "조건부 진입 대기",
+      "price": 166.19,
+      "price_as_of": "2026-11-12",
+      "voo_price": 696.0,
+      "score": 78,
+      "reason": "고성장·저PER 조합의 이익 예상기간 및 공급업체 추정 기준 재확인"
+    },
+    {
+      "date": "2026-11-13",
+      "ticker": "ORCL",
+      "action": "조건부 진입 대기",
+      "price": 127.11,
+      "price_as_of": "2026-11-12",
+      "voo_price": 696.0,
+      "score": 74,
+      "reason": "큰 폭의 잉여현금흐름 적자: 자본지출·차입부담 회복 확인 전 적극 매수 보류"
+    },
+    {
+      "date": "2026-11-13",
+      "ticker": "BKNG",
+      "action": "조건부 진입 대기",
+      "price": 161.2,
+      "price_as_of": "2026-11-12",
+      "voo_price": 696.0,
+      "score": 70,
+      "reason": "3개월 급락에 따른 하락 추세·실적 원인 확인"
+    },
+    {
+      "date": "2026-11-13",
+      "ticker": "DIS",
+      "action": "조건부 진입 대기",
+      "price": 118.23,
+      "price_as_of": "2026-11-12",
+      "voo_price": 696.0,
+      "score": 62,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-11-13",
+      "ticker": "PG",
+      "action": "조건부 진입 대기",
+      "price": 168.03,
+      "price_as_of": "2026-11-12",
+      "voo_price": 696.0,
+      "score": 60,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-11-13",
+      "ticker": "ETN",
+      "action": "조건부 진입 대기",
+      "price": 359.04,
+      "price_as_of": "2026-11-12",
+      "voo_price": 696.0,
+      "score": 59,
+      "reason": "3개월 급락에 따른 하락 추세·실적 원인 확인"
+    },
+    {
+      "date": "2026-11-13",
+      "ticker": "SO",
+      "action": "조건부 진입 대기",
+      "price": 92.47,
+      "price_as_of": "2026-11-12",
+      "voo_price": 696.0,
+      "score": 51,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-11-13",
+      "ticker": "GS",
+      "action": "조건부 진입 대기",
+      "price": 913.6,
+      "price_as_of": "2026-11-12",
+      "voo_price": 696.0,
+      "score": 50,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-11-13",
+      "ticker": "AMZN",
+      "action": "대기",
+      "price": 267.44,
+      "price_as_of": "2026-11-12T00:00:00+00:00",
+      "voo_price": 696.0,
+      "score": null,
+      "reason": "가격 또는 최소 실적 지표 수집 실패"
+    },
+    {
+      "date": "2026-11-13",
+      "ticker": "XOM",
+      "action": "대기",
+      "price": 169.78,
+      "price_as_of": "2026-11-12T00:00:00+00:00",
+      "voo_price": 696.0,
+      "score": null,
+      "reason": "가격 또는 최소 실적 지표 수집 실패"
+    },
+    {
+      "date": "2026-11-13",
+      "ticker": "O",
+      "action": "대기",
+      "price": 59.26,
+      "price_as_of": "2026-11-12T00:00:00+00:00",
+      "voo_price": 696.0,
+      "score": null,
+      "reason": "가격 또는 최소 실적 지표 수집 실패"
     }
   ],
-  "last_updated": "2026-11-12",
+  "last_updated": "2026-11-13",
   "last_allocation": {
     "cash_short": 45,
     "us_index": 25,
