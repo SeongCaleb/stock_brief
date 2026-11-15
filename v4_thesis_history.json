@@ -1,24 +1,24 @@
 {
   "latest": {
     "ORCL": {
-      "date": "2026-11-14",
+      "date": "2026-11-15",
       "price": 125.35,
       "forward_pe": 11.334854,
       "growth_estimate_pct": 35.68,
       "source": "https://finance.yahoo.com/quote/ORCL"
     },
     "TMUS": {
-      "date": "2026-11-14",
+      "date": "2026-11-15",
       "price": 169.95,
       "forward_pe": 11.9215555,
       "growth_estimate_pct": 25.12,
       "source": "https://finance.yahoo.com/quote/TMUS"
     },
     "BKNG": {
-      "date": "2026-11-14",
+      "date": "2026-11-15",
       "price": 159.58,
-      "forward_pe": 13.019457,
-      "growth_estimate_pct": 17.59,
+      "forward_pe": 13.043058,
+      "growth_estimate_pct": 17.5,
       "source": "https://finance.yahoo.com/quote/BKNG"
     },
     "COST": {
@@ -78,10 +78,10 @@
       "source": "https://finance.yahoo.com/quote/EQIX"
     },
     "NVDA": {
-      "date": "2026-11-14",
+      "date": "2026-11-15",
       "price": 162.85,
       "forward_pe": 10.272057,
-      "growth_estimate_pct": 69.82,
+      "growth_estimate_pct": 69.98,
       "source": "https://finance.yahoo.com/quote/NVDA"
     },
     "CRM": {
@@ -176,79 +176,79 @@
       "source": "https://finance.yahoo.com/quote/AAPL"
     },
     "MSFT": {
-      "date": "2026-11-05",
-      "price": 555.8,
-      "forward_pe": 22.986574,
-      "growth_estimate_pct": 20.87,
+      "date": "2026-11-15",
+      "price": 523.88,
+      "forward_pe": 21.65179,
+      "growth_estimate_pct": 20.86,
       "source": "https://finance.yahoo.com/quote/MSFT"
     },
     "META": {
-      "date": "2026-11-05",
-      "price": 630.0,
-      "forward_pe": 17.702671,
-      "growth_estimate_pct": 16.49,
+      "date": "2026-11-15",
+      "price": 641.69,
+      "forward_pe": 18.031155,
+      "growth_estimate_pct": 16.65,
       "source": "https://finance.yahoo.com/quote/META"
     },
     "HD": {
-      "date": "2026-11-05",
-      "price": 355.44,
-      "forward_pe": 22.257833,
-      "growth_estimate_pct": 6.32,
+      "date": "2026-11-15",
+      "price": 348.69,
+      "forward_pe": 21.91661,
+      "growth_estimate_pct": 5.96,
       "source": "https://finance.yahoo.com/quote/HD"
     },
     "WMT": {
-      "date": "2026-11-05",
-      "price": 129.17,
-      "forward_pe": 40.034714,
-      "growth_estimate_pct": 11.77,
+      "date": "2026-11-15",
+      "price": 128.09,
+      "forward_pe": 39.75691,
+      "growth_estimate_pct": 11.74,
       "source": "https://finance.yahoo.com/quote/WMT"
     },
     "ISRG": {
-      "date": "2026-11-05",
-      "price": 482.1,
-      "forward_pe": 38.6646,
+      "date": "2026-11-15",
+      "price": 443.59,
+      "forward_pe": 35.576084,
       "growth_estimate_pct": 10.81,
       "source": "https://finance.yahoo.com/quote/ISRG"
     },
     "JPM": {
-      "date": "2026-11-05",
-      "price": 352.11,
-      "forward_pe": 13.768786,
-      "growth_estimate_pct": 6.46,
+      "date": "2026-11-15",
+      "price": 346.19,
+      "forward_pe": 13.537293,
+      "growth_estimate_pct": 6.94,
       "source": "https://finance.yahoo.com/quote/JPM"
     },
     "GE": {
-      "date": "2026-11-05",
-      "price": 329.45,
-      "forward_pe": 35.37608,
+      "date": "2026-11-15",
+      "price": 331.81,
+      "forward_pe": 35.629494,
       "growth_estimate_pct": 13.97,
       "source": "https://finance.yahoo.com/quote/GE"
     },
     "SLB": {
-      "date": "2026-11-05",
-      "price": 51.56,
-      "forward_pe": 16.758543,
-      "growth_estimate_pct": 25.72,
+      "date": "2026-11-15",
+      "price": 51.67,
+      "forward_pe": 16.786001,
+      "growth_estimate_pct": 25.53,
       "source": "https://finance.yahoo.com/quote/SLB"
     },
     "SHW": {
-      "date": "2026-11-05",
-      "price": 363.5,
-      "forward_pe": 27.512846,
+      "date": "2026-11-15",
+      "price": 349.89,
+      "forward_pe": 26.482723,
       "growth_estimate_pct": 9.82,
       "source": "https://finance.yahoo.com/quote/SHW"
     },
     "VST": {
-      "date": "2026-11-05",
-      "price": 120.29,
-      "forward_pe": 12.619651,
-      "growth_estimate_pct": 11.37,
+      "date": "2026-11-15",
+      "price": 133.01,
+      "forward_pe": 14.208998,
+      "growth_estimate_pct": 15.54,
       "source": "https://finance.yahoo.com/quote/VST"
     },
     "PLD": {
-      "date": "2026-11-05",
-      "price": 131.36,
-      "forward_pe": 36.463566,
+      "date": "2026-11-15",
+      "price": 128.67,
+      "forward_pe": 35.71686,
       "growth_estimate_pct": -9.14,
       "source": "https://finance.yahoo.com/quote/PLD"
     },
@@ -442,5 +442,5 @@
       "source": "https://finance.yahoo.com/quote/AMD"
     }
   },
-  "last_sent_date": "2026-11-14"
+  "last_sent_date": "2026-11-15"
 }
