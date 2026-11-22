@@ -1,79 +1,79 @@
 {
   "latest": {
     "ORCL": {
-      "date": "2026-11-21",
+      "date": "2026-11-22",
       "price": 101.19,
       "forward_pe": 9.15017,
       "growth_estimate_pct": 35.68,
       "source": "https://finance.yahoo.com/quote/ORCL"
     },
     "TMUS": {
-      "date": "2026-11-21",
+      "date": "2026-11-22",
       "price": 165.6,
       "forward_pe": 11.616415,
       "growth_estimate_pct": 25.11,
       "source": "https://finance.yahoo.com/quote/TMUS"
     },
     "BKNG": {
-      "date": "2026-11-21",
+      "date": "2026-11-22",
       "price": 144.91,
       "forward_pe": 11.844026,
       "growth_estimate_pct": 17.47,
       "source": "https://finance.yahoo.com/quote/BKNG"
     },
     "COST": {
-      "date": "2026-11-17",
-      "price": 1113.74,
-      "forward_pe": 44.50988,
-      "growth_estimate_pct": 9.92,
+      "date": "2026-11-22",
+      "price": 1102.15,
+      "forward_pe": 44.009495,
+      "growth_estimate_pct": 10.05,
       "source": "https://finance.yahoo.com/quote/COST"
     },
     "UNH": {
-      "date": "2026-11-17",
-      "price": 412.02,
-      "forward_pe": 17.659977,
-      "growth_estimate_pct": 13.7,
+      "date": "2026-11-22",
+      "price": 339.85,
+      "forward_pe": 14.477794,
+      "growth_estimate_pct": 13.88,
       "source": "https://finance.yahoo.com/quote/UNH"
     },
     "BRK-B": {
-      "date": "2026-11-17",
-      "price": 592.85,
-      "forward_pe": 25.983252,
-      "growth_estimate_pct": 1.14,
+      "date": "2026-11-22",
+      "price": 570.0,
+      "forward_pe": 24.98179,
+      "growth_estimate_pct": 0.4,
       "source": "https://finance.yahoo.com/quote/BRK-B"
     },
     "DE": {
-      "date": "2026-11-17",
-      "price": 653.99,
-      "forward_pe": 28.545166,
-      "growth_estimate_pct": 26.38,
+      "date": "2026-11-22",
+      "price": 609.25,
+      "forward_pe": 26.576708,
+      "growth_estimate_pct": 26.45,
       "source": "https://finance.yahoo.com/quote/DE"
     },
     "EOG": {
-      "date": "2026-11-17",
-      "price": 155.47,
-      "forward_pe": 9.180618,
-      "growth_estimate_pct": -9.56,
+      "date": "2026-11-22",
+      "price": 148.6,
+      "forward_pe": 8.735627,
+      "growth_estimate_pct": -9.67,
       "source": "https://finance.yahoo.com/quote/EOG"
     },
     "LIN": {
-      "date": "2026-11-17",
-      "price": 523.46,
-      "forward_pe": 26.78071,
-      "growth_estimate_pct": 13.2,
+      "date": "2026-11-22",
+      "price": 502.83,
+      "forward_pe": 25.704033,
+      "growth_estimate_pct": 13.62,
       "source": "https://finance.yahoo.com/quote/LIN"
     },
     "DUK": {
-      "date": "2026-11-17",
-      "price": 130.59,
-      "forward_pe": 18.223352,
-      "growth_estimate_pct": 6.21,
+      "date": "2026-11-22",
+      "price": 129.78,
+      "forward_pe": 18.10802,
+      "growth_estimate_pct": 6.12,
       "source": "https://finance.yahoo.com/quote/DUK"
     },
     "EQIX": {
-      "date": "2026-11-17",
-      "price": 1043.0601,
-      "forward_pe": 50.40155,
+      "date": "2026-11-22",
+      "price": 968.22,
+      "forward_pe": 46.785213,
       "growth_estimate_pct": 10.45,
       "source": "https://finance.yahoo.com/quote/EQIX"
     },
@@ -456,5 +456,5 @@
       "source": "https://finance.yahoo.com/quote/TSM"
     }
   },
-  "last_sent_date": "2026-11-21"
+  "last_sent_date": "2026-11-22"
 }
