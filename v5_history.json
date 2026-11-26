@@ -3900,9 +3900,169 @@
       "voo_price": 660.71,
       "score": null,
       "reason": "가격 또는 최소 실적 지표 수집 실패"
+    },
+    {
+      "date": "2026-11-26",
+      "ticker": "TMUS",
+      "action": "분할 매수 검토",
+      "price": 166.25,
+      "price_as_of": "2026-11-25",
+      "voo_price": 658.87,
+      "score": 80,
+      "reason": "상대적으로 양호한 성장·가격·재무 조건"
+    },
+    {
+      "date": "2026-11-26",
+      "ticker": "HON",
+      "action": "분할 매수 검토",
+      "price": 225.1,
+      "price_as_of": "2026-11-25",
+      "voo_price": 658.87,
+      "score": 70,
+      "reason": "상대적으로 양호한 성장·가격·재무 조건"
+    },
+    {
+      "date": "2026-11-26",
+      "ticker": "NVDA",
+      "action": "조건부 진입 대기",
+      "price": 149.3,
+      "price_as_of": "2026-11-25",
+      "voo_price": 658.87,
+      "score": 80,
+      "reason": "고성장·저PER 조합의 이익 예상기간 및 공급업체 추정 기준 재확인"
+    },
+    {
+      "date": "2026-11-26",
+      "ticker": "ORCL",
+      "action": "조건부 진입 대기",
+      "price": 103.88,
+      "price_as_of": "2026-11-25",
+      "voo_price": 658.87,
+      "score": 73,
+      "reason": "큰 폭의 잉여현금흐름 적자: 자본지출·차입부담 회복 확인 전 적극 매수 보류"
+    },
+    {
+      "date": "2026-11-26",
+      "ticker": "VICR",
+      "action": "조건부 진입 대기",
+      "price": 125.45,
+      "price_as_of": "2026-11-25",
+      "voo_price": 658.87,
+      "score": 72,
+      "reason": "3개월 급락에 따른 하락 추세·실적 원인 확인"
+    },
+    {
+      "date": "2026-11-26",
+      "ticker": "BKNG",
+      "action": "조건부 진입 대기",
+      "price": 149.5,
+      "price_as_of": "2026-11-25",
+      "voo_price": 658.87,
+      "score": 71,
+      "reason": "3개월 급락에 따른 하락 추세·실적 원인 확인"
+    },
+    {
+      "date": "2026-11-26",
+      "ticker": "NFLX",
+      "action": "조건부 진입 대기",
+      "price": 59.41,
+      "price_as_of": "2026-11-25",
+      "voo_price": 658.87,
+      "score": 61,
+      "reason": "3개월 급락에 따른 하락 추세·실적 원인 확인"
+    },
+    {
+      "date": "2026-11-26",
+      "ticker": "MCD",
+      "action": "조건부 진입 대기",
+      "price": 283.5,
+      "price_as_of": "2026-11-25",
+      "voo_price": 658.87,
+      "score": 60,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-11-26",
+      "ticker": "PEP",
+      "action": "조건부 진입 대기",
+      "price": 143.93,
+      "price_as_of": "2026-11-25",
+      "voo_price": 658.87,
+      "score": 58,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-11-26",
+      "ticker": "V",
+      "action": "조건부 진입 대기",
+      "price": 424.39,
+      "price_as_of": "2026-11-25",
+      "voo_price": 658.87,
+      "score": 56,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-11-26",
+      "ticker": "APD",
+      "action": "조건부 진입 대기",
+      "price": 314.26,
+      "price_as_of": "2026-11-25",
+      "voo_price": 658.87,
+      "score": 56,
+      "reason": "가격/가설 확인 조건 필요"
+    },
+    {
+      "date": "2026-11-26",
+      "ticker": "NEE",
+      "action": "조건부 진입 대기",
+      "price": 85.41,
+      "price_as_of": "2026-11-25",
+      "voo_price": 658.87,
+      "score": 54,
+      "reason": "큰 폭의 잉여현금흐름 적자: 자본지출·차입부담 회복 확인 전 적극 매수 보류"
+    },
+    {
+      "date": "2026-11-26",
+      "ticker": "JNJ",
+      "action": "대기",
+      "price": 273.94,
+      "price_as_of": "2026-11-25T00:00:00+00:00",
+      "voo_price": 658.87,
+      "score": null,
+      "reason": "가격 또는 최소 실적 지표 수집 실패"
+    },
+    {
+      "date": "2026-11-26",
+      "ticker": "COP",
+      "action": "대기",
+      "price": 135.02,
+      "price_as_of": "2026-11-25T00:00:00+00:00",
+      "voo_price": 658.87,
+      "score": null,
+      "reason": "가격 또는 최소 실적 지표 수집 실패"
+    },
+    {
+      "date": "2026-11-26",
+      "ticker": "AMT",
+      "action": "대기",
+      "price": 184.59,
+      "price_as_of": "2026-11-25T00:00:00+00:00",
+      "voo_price": 658.87,
+      "score": null,
+      "reason": "가격 또는 최소 실적 지표 수집 실패"
+    },
+    {
+      "date": "2026-11-26",
+      "ticker": "UVE",
+      "action": "대기",
+      "price": 47.95,
+      "price_as_of": "2026-11-25T00:00:00+00:00",
+      "voo_price": 658.87,
+      "score": null,
+      "reason": "가격 또는 최소 실적 지표 수집 실패"
     }
   ],
-  "last_updated": "2026-11-25",
+  "last_updated": "2026-11-26",
   "last_allocation": {
     "cash_short": 45,
     "us_index": 25,
